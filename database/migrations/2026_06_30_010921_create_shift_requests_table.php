@@ -27,6 +27,8 @@ return new class extends Migration
 
             $table->date('work_date');
 
+            $table->boolean('remote')->default(false);
+            
             $table->time('start_time')->nullable();
 
             $table->time('end_time')->nullable();
