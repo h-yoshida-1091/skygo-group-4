@@ -11,12 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('shifts', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->string('email', 255)->unique();
-            $table->string('department', 100);
-            $table->string('password', 255);
+
+            $table->foreignId('user_id')
+                  ->constrained('users')
+                  ->cascadeOnDelete();
+
+            $table->date('work_date');
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->integer('break_time');
+
             $table->timestamps();
         });
     }
@@ -26,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('shifts');
     }
 };
