@@ -19,6 +19,7 @@ return new class extends Migration
                   ->cascadeOnDelete();
 
             $table->date('work_date');
+            $table->boolean('remote')->default(false);
             $table->time('start_time');
             $table->time('end_time');
             $table->integer('break_time');
