@@ -29,7 +29,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            //'password' => 'hashed',
         ];
     }
 
@@ -46,5 +46,10 @@ class User extends Authenticatable
     public function shiftRequests()
     {
         return $this->hasMany(ShiftRequest::class);
+    }
+
+    public function attendanceRequests()
+    {
+        return $this->hasMany(AttendanceRequest::class);
     }
 }
