@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ShiftRequest::class);
     }
+
+    public function attendanceRequests()
+    {
+        return $this->hasMany(AttendanceRequest::class);
+    }
 }
