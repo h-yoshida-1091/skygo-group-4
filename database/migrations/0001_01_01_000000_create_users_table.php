@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email', 255)->unique();
             $table->string('department', 100);
             $table->string('password', 255);
+            $table->boolean('admin')->default(false);
             $table->timestamps();
         });
 
