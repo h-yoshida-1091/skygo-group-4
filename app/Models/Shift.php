@@ -27,6 +27,6 @@ class Shift extends Model
 
     public function shiftRequests()
     {
-        return $this->hasMany(ShiftRequest::class);
+        return $this->hasMany(ShiftRequest::class, 'shift_id');
     }
 }

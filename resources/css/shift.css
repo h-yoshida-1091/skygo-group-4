@@ -201,6 +201,34 @@ button[type="submit"]:hover {
     background-color: #1d4ed8;
 }
 
+/* 編集するボタン */
+.edit-button {
+    width: 100%;
+    padding: 14px;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 12px;
+    background-color: #f59e0b;
+}
+
+.edit-button:hover {
+    background-color: #d97706;
+}
+
+.edit-button.editing {
+    background-color: #2563eb;
+}
+
+.edit-button.editing:hover {
+    background-color: #1d4ed8;
+}
+
+.edit-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
 p {
     width: 90%;
     margin: 0 auto 16px;
