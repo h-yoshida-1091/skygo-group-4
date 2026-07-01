@@ -25,7 +25,19 @@
 const menuBtn = document.getElementById("menuBtn");
 const menu = document.getElementById("menu");
 
-menuBtn.addEventListener("click", () => {
+// ハンバーガーボタンを押したら開閉
+menuBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // ボタンのクリックがdocumentまで伝わらないようにする
     menu.classList.toggle("open");
+});
+
+// メニュー内をクリックしても閉じない
+menu.addEventListener("click", (e) => {
+    e.stopPropagation();
+});
+
+// メニュー外をクリックしたら閉じる
+document.addEventListener("click", () => {
+    menu.classList.remove("open");
 });
 </script>
