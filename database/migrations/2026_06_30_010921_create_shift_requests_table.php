@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('shift_requests', function (Blueprint $table) {
@@ -23,17 +20,17 @@ return new class extends Migration
                   ->constrained('shifts')
                   ->nullOnDelete();
 
-            $table->enum('request_type', ['change', 'holiday']);
+            $table->enum('request_type', ['submit', 'change']);
 
             $table->date('work_date');
 
             $table->boolean('remote')->default(false);
-            
+
             $table->time('start_time')->nullable();
 
             $table->time('end_time')->nullable();
 
-            $table->text('reason');
+            $table->text('reason')->nullable();
 
             $table->enum('status', [
                 'pending',
@@ -41,13 +38,12 @@ return new class extends Migration
                 'rejected'
             ])->default('pending');
 
+            $table->timestamp('submitted_at')->nullable();
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('shift_requests');

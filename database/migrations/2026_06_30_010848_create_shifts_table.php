@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('shifts', function (Blueprint $table) {
@@ -19,18 +16,21 @@ return new class extends Migration
                   ->cascadeOnDelete();
 
             $table->date('work_date');
+
             $table->boolean('remote')->default(false);
+
             $table->time('start_time');
+
             $table->time('end_time');
-            $table->integer('break_time');
+
+            $table->integer('break_time')->default(60);
 
             $table->timestamps();
+
+            $table->unique(['user_id', 'work_date']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('shifts');
