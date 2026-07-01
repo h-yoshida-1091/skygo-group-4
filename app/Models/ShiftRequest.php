@@ -16,11 +16,13 @@ class ShiftRequest extends Model
         'end_time',
         'reason',
         'status',
+        'submitted_at',
     ];
 
     protected $casts = [
         'work_date' => 'date',
         'remote' => 'boolean',
+        'submitted_at' => 'datetime',
     ];
 
     public function user()
@@ -30,6 +32,6 @@ class ShiftRequest extends Model
 
     public function shift()
     {
-        return $this->belongsTo(Shift::class);
+        return $this->belongsTo(Shift::class, 'shift_id');
     }
 }

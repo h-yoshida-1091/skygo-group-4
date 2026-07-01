@@ -10,26 +10,11 @@
 
 <body>
     @include('layouts.header')
+    <br>
     <div class="month-header">
-
-        <a class="month-button"
-            href="{{ route('shift.index', [
-            'year' => $month == 1 ? $year - 1 : $year,
-            'month' => $month == 1 ? 12 : $month - 1
-        ]) }}">
-            ＜
-        </a>
-
+        <a class="month-button" href="{{ route('shift.index', ['year' => $month == 1 ? $year - 1 : $year, 'month' => $month == 1 ? 12 : $month - 1]) }}">＜</a>
         <h1>{{ $year }}年{{ $month }}月</h1>
-
-        <a class="month-button"
-            href="{{ route('shift.index', [
-            'year' => $month == 12 ? $year + 1 : $year,
-            'month' => $month == 12 ? 1 : $month + 1
-        ]) }}">
-            ＞
-        </a>
-
+        <a class="month-button" href="{{ route('shift.index', ['year' => $month == 12 ? $year + 1 : $year, 'month' => $month == 12 ? 1 : $month + 1]) }}">＞</a>
     </div>
 
     <div class="status-box">
@@ -57,7 +42,9 @@
         $endDay = $firstDay->copy()->endOfMonth()->endOfWeek(\Carbon\Carbon::SATURDAY);
         $currentDay = $startDay->copy();
 
-        $shiftMap = $shiftRequests->keyBy(function ($shift) {
+        $displayShifts = $pendingRequests->isNotEmpty() ? $pendingRequests : $shifts;
+
+        $shiftMap = $displayShifts->keyBy(function ($shift) {
         return $shift->work_date->format('Y-m-d');
         });
         @endphp
@@ -124,21 +111,35 @@
 
     <form id="shiftForm" method="POST" action="{{ route('shift.store') }}">
         @csrf
+
+        <input type="hidden" name="year" value="{{ $year }}">
+        <input type="hidden" name="month" value="{{ $month }}">
         <input type="hidden" name="shifts_json" id="shiftsJson">
 
+        @if ($shiftStatusText === '変更申請中')
+        <button type="button" id="mainShiftButton" disabled>
+            変更申請中
+        </button>
+        @else
         <button
+            class="edit-button"
             type="{{ $shiftStatusText === '未提出' ? 'submit' : 'button' }}"
             id="mainShiftButton"
             data-status="{{ $shiftStatusText }}">
-            {{ $shiftStatusText === '未提出' ? 'シフトを提出' : '編集する' }}
+            @if ($shiftStatusText === '未提出')
+            シフトを提出
+            @else
+            編集する
+            @endif
         </button>
+        @endif
     </form>
 
     <script>
-        let isEditMode = "{{ $shiftStatusText }}" === "未提出";
         let selectedType = null;
         let selectedStart = null;
         let selectedEnd = null;
+        let isEditMode = "{{ $shiftStatusText }}" === "未提出";
 
         document.querySelectorAll('.work-type-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -167,6 +168,10 @@
 
         document.querySelectorAll('.calendar-day').forEach(day => {
             day.addEventListener('click', function() {
+                if (!isEditMode) {
+                    return;
+                }
+
                 const shiftText = this.querySelector('.shift-text');
 
                 if (!shiftText) {
@@ -174,17 +179,19 @@
                 }
 
                 if (shiftText.innerHTML.trim() !== '') {
-                    shiftText.innerHTML = '';
-                    shiftText.removeAttribute('data-type');
-                    shiftText.removeAttribute('data-start');
-                    shiftText.removeAttribute('data-end');
-                    shiftText.classList.remove('has-shift', 'office-shift', 'remote-shift');
-                    return;
-                }
-
-                if (!selectedType || !selectedStart || !selectedEnd) {
-                    alert('出社・リモートと時間を選択してください');
-                    return;
+                    if (!selectedType || !selectedStart || !selectedEnd) {
+                        shiftText.innerHTML = '';
+                        shiftText.removeAttribute('data-type');
+                        shiftText.removeAttribute('data-start');
+                        shiftText.removeAttribute('data-end');
+                        shiftText.classList.remove('has-shift', 'office-shift', 'remote-shift');
+                        return;
+                    }
+                } else {
+                    if (!selectedType || !selectedStart || !selectedEnd) {
+                        alert('出社・リモートと時間を選択してください');
+                        return;
+                    }
                 }
 
                 shiftText.dataset.type = selectedType;
@@ -207,6 +214,27 @@
             `;
             });
         });
+
+
+        const mainShiftButton = document.getElementById('mainShiftButton');
+
+        if (mainShiftButton && !mainShiftButton.disabled) {
+            mainShiftButton.addEventListener('click', function(event) {
+                if (!isEditMode && this.dataset.status !== '未提出') {
+                    event.preventDefault();
+
+                    isEditMode = true;
+                    this.type = 'submit';
+                    this.classList.add('editing');
+
+                    if (this.dataset.status === '申請中') {
+                        this.textContent = '申請内容を修正';
+                    } else if (this.dataset.status === '提出済み') {
+                        this.textContent = 'シフト変更を申請';
+                    }
+                }
+            });
+        }
 
         document.getElementById('shiftForm').addEventListener('submit', function(event) {
             const shifts = [];
@@ -241,7 +269,7 @@
             }
 
             if (hasWeekendShift) {
-                const weekendConfirm = confirm('土曜日または日曜日にシフトが入っています。このまま提出してもよろしいですか？');
+                const weekendConfirm = confirm('土曜日または日曜日にシフトが入っています。このまま申請してもよろしいですか？');
 
                 if (!weekendConfirm) {
                     event.preventDefault();
@@ -249,7 +277,7 @@
                 }
             }
 
-            const submitConfirm = confirm('シフトを提出します。よろしいですか？');
+            const submitConfirm = confirm('シフトを申請します。よろしいですか？');
 
             if (!submitConfirm) {
                 event.preventDefault();
