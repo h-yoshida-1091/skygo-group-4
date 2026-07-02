@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>シフト申請</title>
     @vite(['resources/css/shift.css'])
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 </head>
 
 <body>
