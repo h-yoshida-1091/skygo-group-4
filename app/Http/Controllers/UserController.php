@@ -26,7 +26,8 @@ class UserController extends Controller
         // メールアドレスでユーザー検索
         $user = User::where('email', $request->email)->first();
 
-        // ユーザーが存在しない、またはパスワードが違う場合
+
+        // ユーザーが存在しない、またはパスワードが一致しない場合
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'email' => 'メールアドレスまたはパスワードが違います。',
@@ -43,6 +44,9 @@ class UserController extends Controller
             return redirect('/admin/dashboard');
         }
 
+        // ダッシュボードへ
+      else
+        
         return redirect('/dashboard');
     }
 

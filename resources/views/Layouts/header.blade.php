@@ -13,8 +13,8 @@
 <nav id="menu" class="app-side-menu">
     <div class="app-menu-title">メニュー</div>
 
-    <a href="#">ダッシュボード</a>
-    <a href="#">勤怠一覧</a>
+    <a href="{{ route('dashboard') }}">ダッシュボード</a>
+    <a href="{{ route('workschedule') }}">勤務表</a>
     <a href="#">勤怠申請</a>
     <a href="{{ route('shift.index') }}">シフト一覧、シフト修正</a>
 

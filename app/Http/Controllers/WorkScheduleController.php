@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon; 
-use App\Models\WorkSchedule; 
+use App\Models\Attendance;
+use Illuminate\Support\Facades\Auth; // 💡 追加：Authファサードをインポート
 
 class WorkScheduleController extends Controller
-
 {
     public function index(Request $request)
     {
@@ -27,33 +27,36 @@ class WorkScheduleController extends Controller
         $prevMonth = $currentMonth->copy()->subMonth()->format('Y-m');
         $nextMonth = $currentMonth->copy()->addMonth()->format('Y-m');
 
-        // 4. 該当月の勤怠データを取得（※サンプルとしてログインユーザーのデータを想定）
-        // $request->user()->attendances... のように絞り込むのが一般的です
-        //$WorkSchedule = WorkSchedule::whereYear('date', $currentMonth->year)
-            // ->whereMonth('date', $currentMonth->month)
-            // ->orderBy('date', 'asc')
-            // ->get();  えらーだよ
+        // 4. 該当月の勤怠データを取得
+        $workSchedule = collect(); // デフォルトは空のコレクション
+        
+        // 💡 Auth::check() と Auth::id() に修正
+        if (Auth::check()) {
+            $workSchedule = Attendance::where('user_id', Auth::id())
+                ->whereYear('work_date', $currentMonth->year)
+                ->whereMonth('work_date', $currentMonth->month)
+                ->orderBy('work_date', 'asc')
+                ->get();
+        }
 
-        // 5. サマリーエリアに渡すデータの計算（ダミー、または実データから集計）
-        // ※実際はDBから合計値などを計算するか、モデルのメソッド等から取得してください
+        // 5. サマリーエリアに渡すデータの計算（ダミー）
         $summary = [
-            'total_work'      => '160:00', // 合計勤務時間
-            'prescribed_work' => '160:00', // 規定労働時間
-            'work_days'       => '20日',   // 勤務日数
-            'total_break'     => '20:00',  // 休憩時間
-            'late_early'      => '0:00',   // 遅刻早退時間
-            'absent_days'     => '0日',    // 欠勤日数
+            'total_work'      => '160:00',
+            'prescribed_work' => '160:00',
+            'work_days'       => '20日',
+            'total_break'     => '20:00',
+            'late_early'      => '0:00',
+            'absent_days'     => '0日',
         ];
 
         // 6. ビューにデータを渡して変数を展開
-        return view('workSchedule.index', [
+        return view('workSchedule', [
             'tab'          => $tab,
             'currentMonth' => $currentMonth->format('Y-m'),
             'prevMonth'    => $prevMonth,
             'nextMonth'    => $nextMonth,
-           // 'workSchedule'  => $WorkSchedule,
+            'workSchedule' => $workSchedule,
             'summary'      => $summary,
         ]);
     }
 }
-

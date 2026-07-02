@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\WorkScheduleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,12 +26,13 @@ Route::get('/dashboard', [AttendanceController::class, 'index']);
 Route::get('/shift', [ShiftController::class, 'index'])->name('shift.index');
 Route::post('/shift', [ShiftController::class, 'store'])->name('shift.store');
 
-/*打刻*/
+
+// ダッシュボード表示
+Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
 
 Route::post('/attendances/clock-in', [AttendanceController::class, 'clockIn']);
 Route::post('/attendances/clock-out', [AttendanceController::class, 'clockOut']);
 
-Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
 
 /*管理者*/
 
@@ -42,3 +44,11 @@ Route::post('/admin/shifts/{id}/approve', [AdminController::class, 'approve'])
 
 Route::post('/admin/shifts/{id}/reject', [AdminController::class, 'reject'])
     ->name('admin.shifts.reject');
+
+// ポップアップからの修正アクション（PUT）
+Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
+
+// 勤怠画面の表示
+Route::get('/workschedule', [WorkScheduleController::class, 'index'])->name('workschedule');
+
+
