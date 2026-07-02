@@ -1,0 +1,273 @@
+body {
+    margin: 0;
+    padding: 40px;
+    font-family: Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    background-color: #f4f7fb;
+    color: #222;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 28px;
+    font-size: 36px;
+}
+
+.month-header {
+    width: 90%;
+    margin: 0 auto 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.month-header h1 {
+    margin: 0;
+    font-size: 40px;
+}
+
+.month-button {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-decoration: none;
+    font-size: 28px;
+    color: #2563eb;
+
+    border: 1px solid #dbe3f0;
+    border-radius: 50%;
+
+    background: white;
+
+    transition: .2s;
+}
+
+.month-button:hover {
+    background: #2563eb;
+    color: white;
+}
+
+body>div:first-of-type {
+    text-align: center;
+    margin-bottom: 28px;
+    font-size: 22px;
+}
+
+body>div:first-of-type a {
+    display: inline-block;
+    margin: 0 20px;
+    padding: 12px 24px;
+    color: #2563eb;
+    background-color: #fff;
+    border: 1px solid #dbe3f0;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+table {
+    width: 90%;
+    min-width: 900px;
+    margin: 0 auto 28px;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+th {
+    height: 46px;
+    background-color: #eef4ff;
+    font-size: 18px;
+}
+
+/* 曜日 */
+th.sun {
+    color: #e53935;
+}
+
+th.sat {
+    color: #2563eb;
+}
+
+/* 日付 */
+strong.sunday {
+    color: #e53935;
+}
+
+strong.saturday {
+    color: #2563eb;
+}
+
+td {
+    width: 140px;
+    height: 130px;
+    padding: 12px;
+    vertical-align: top;
+    border: 1px solid #dfe7f1;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+td:hover {
+    background-color: #f8fbff;
+}
+
+td strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+td span {
+    color: #aaa;
+}
+
+.shift-text {
+    margin-top: 8px;
+    min-height: 0;
+    padding: 0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.shift-text.has-shift {
+    display: inline-block;
+    padding: 8px 12px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.office-shift {
+    background-color: #2563eb;
+}
+
+.remote-shift {
+    background-color: #16a34a;
+}
+
+hr {
+    width: 90%;
+    margin: 28px auto;
+    border: none;
+    border-top: 1px solid #dbe3f0;
+}
+
+h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.select-card {
+    width: 90%;
+    margin: 0 auto 20px;
+    padding: 24px 28px;
+    background-color: #fff;
+    border: 1px solid #dbe3f0;
+    border-radius: 16px;
+}
+
+form {
+    width: 90%;
+    margin: 0 auto 20px;
+}
+
+form button[type="submit"] {
+    display: block;
+}
+
+button {
+    cursor: pointer;
+    margin: 4px 8px 4px 0;
+    padding: 10px 18px;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    background-color: #fff;
+    color: #334155;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #eef4ff;
+}
+
+.work-type-btn.selected,
+.time-btn.selected {
+    background-color: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 12px;
+}
+
+button[type="submit"]:hover {
+    background-color: #1d4ed8;
+}
+
+/* 編集するボタン */
+.edit-button {
+    width: 100%;
+    padding: 14px;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 12px;
+    background-color: #f59e0b;
+}
+
+.edit-button:hover {
+    background-color: #d97706;
+}
+
+.edit-button.editing {
+    background-color: #2563eb;
+}
+
+.edit-button.editing:hover {
+    background-color: #1d4ed8;
+}
+
+.edit-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+p {
+    width: 90%;
+    margin: 0 auto 16px;
+    padding: 12px 16px;
+    background-color: #ecfdf5;
+    border: 1px solid #86efac;
+    border-radius: 10px;
+}
+
+.status-box {
+    width: 90%;
+    margin: 0 auto 20px;
+    padding: 16px 20px;
+    background-color: #ffffff;
+    border: 1px solid #dbe3f0;
+    border-radius: 14px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.status-box strong {
+    color: #2563eb;
+}
