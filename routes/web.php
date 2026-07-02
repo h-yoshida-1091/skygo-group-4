@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\WorkScheduleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,3 +33,7 @@ Route::post('/attendances/clock-out', [AttendanceController::class, 'clockOut'])
 
 // ポップアップからの修正アクション（PUT）
 Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
+
+// 勤怠画面の表示
+Route::get('/workschedule', [WorkScheduleController::class, 'index'])->name('workschedule');
+
