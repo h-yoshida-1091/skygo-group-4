@@ -52,13 +52,13 @@ h1 {
     color: white;
 }
 
-body > div:first-of-type {
+body>div:first-of-type {
     text-align: center;
     margin-bottom: 28px;
     font-size: 22px;
 }
 
-body > div:first-of-type a {
+body>div:first-of-type a {
     display: inline-block;
     margin: 0 20px;
     padding: 12px 24px;
@@ -84,6 +84,24 @@ th {
     height: 46px;
     background-color: #eef4ff;
     font-size: 18px;
+}
+
+/* 曜日 */
+th.sun {
+    color: #e53935;
+}
+
+th.sat {
+    color: #2563eb;
+}
+
+/* 日付 */
+strong.sunday {
+    color: #e53935;
+}
+
+strong.saturday {
+    color: #2563eb;
 }
 
 td {
@@ -201,6 +219,35 @@ button[type="submit"]:hover {
     background-color: #1d4ed8;
 }
 
+/* 編集するボタン */
+.edit-button {
+    width: 100%;
+    padding: 14px;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 12px;
+    background-color: #f59e0b;
+}
+
+.edit-button:hover {
+    background-color: #d97706;
+}
+
+.edit-button.editing {
+    background-color: #2563eb;
+}
+
+.edit-button.editing:hover {
+    background-color: #1d4ed8;
+}
+
+.edit-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
 p {
     width: 90%;
     margin: 0 auto 16px;
@@ -209,6 +256,7 @@ p {
     border: 1px solid #86efac;
     border-radius: 10px;
 }
+
 .status-box {
     width: 90%;
     margin: 0 auto 20px;
