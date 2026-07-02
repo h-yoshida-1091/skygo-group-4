@@ -24,7 +24,7 @@ Route::get('/shift', [ShiftController::class, 'index'])->name('shift.index');
 Route::post('/shift', [ShiftController::class, 'store'])->name('shift.store');
 
 // ダッシュボード表示
-Route::get('/dashboard', [AttendanceController::class, 'index']);
+Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
 
 // 打刻アクション
 Route::post('/attendances/clock-in', [AttendanceController::class, 'clockIn']);
