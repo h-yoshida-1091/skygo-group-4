@@ -103,4 +103,61 @@ class AttendanceController extends Controller
 
         return redirect()->back()->with('success', '勤怠データを修正しました。');
     }
+
+    public function storeRequest(Request $request, $attendanceId)
+    {
+        // 1. バリデーション（修正理由を必須にするなど）
+        $request->validate([
+            'requested_clock_in'  => 'required|date_format:H:i',
+            'requested_clock_out' => 'nullable|date_format:H:i',
+            'reason'              => 'required|string|max:500',
+        ]);
+
+        $userId = 1; // テスト用（ログイン機能実装後は Auth::id() ）
+        
+        // 元の勤怠データを取得
+        $attendance = Attendance::findOrFail($attendanceId);
+
+        // 画面から送られてきた時間（H:i）を、日付と結合して Y-m-d H:i:s の形にする
+        $workDate = $attendance->work_date;
+        $requestedClockIn = Carbon::parse($workDate . ' ' . $request->input('requested_clock_in'));
+        $requestedClockOut = $request->input('requested_clock_out') 
+            ? Carbon::parse($workDate . ' ' . $request->input('requested_clock_out'))
+            : null;
+
+        // 2. attendance_requests テーブルに申請データを保存
+        AttendanceRequest::create([
+            'user_id'             => $userId,
+            'attendance_id'       => $attendance->id,
+            'work_date'           => $workDate,
+            'requested_clock_in'  => $requestedClockIn,
+            'requested_clock_out' => $requestedClockOut,
+            'reason'              => $request->input('reason'),
+            'status'              => 'pending', // デフォルトは承認待ち
+        ]);
+
+        return redirect()->back()->with('success', '打刻修正のリクエストを送信しました（承認待ち）。');
+    }
+
+    /**
+     * 【修正】管理者が申請を「承認（approved）」したときの処理
+     * （本来は管理者用画面のコントローラーに分けるのが理想ですが、一旦ここに記載します）
+     */
+    // public function approveRequest($requestId)
+    // {
+    //     // 申請データを取得
+    //     $attendanceRequest = AttendanceRequest::findOrFail($requestId);
+
+    //     // 1. 申請のステータスを「approved（承認）」に更新
+    //     $attendanceRequest->update(['status' => 'approved']);
+
+    //     // 2. 元の勤怠データ（attendancesテーブル）を申請された時間で上書きする！
+    //     $attendance = Attendance::findOrFail($attendanceRequest->attendance_id);
+    //     $attendance->update([
+    //         'clock_in'  => $attendanceRequest->requested_clock_in,
+    //         'clock_out' => $attendanceRequest->requested_clock_out,
+    //     ]);
+
+    //     return redirect()->back()->with('success', '申請を承認し、勤怠データを更新しました。');
+    // }
 }

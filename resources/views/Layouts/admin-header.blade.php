@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="{{ asset('css/header.css') }}">
+
 <header class="header">
     <button id="menuBtn" class="menu-btn">
         ☰
@@ -8,13 +10,15 @@
 
 <nav id="menu" class="menu">
 
-    <a href="#">🏠 ダッシュボード</a>
+    <a href="/admin/dashboard">📊 管理者ダッシュボード</a>
 
-    <a href="#">📋 シフト申請一覧</a>
+    <a href="/shift">📋 シフト申請一覧</a>
 
-    <a href="#">👤 ユーザー管理</a>
+    <a href="/admin/users">👤 ユーザー管理</a>
 
-    <form action="#" method="POST">
+    <a href="/dashboard">🏠 一般画面へ</a>
+
+    <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="logout-btn">
             🚪 ログアウト
@@ -24,19 +28,19 @@
 </nav>
 
 <script>
-const menuBtn = document.getElementById("menuBtn");
-const menu = document.getElementById("menu");
+    const menuBtn = document.getElementById("menuBtn");
+    const menu = document.getElementById("menu");
 
-menuBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    menu.classList.toggle("open");
-});
+    menuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("open");
+    });
 
-menu.addEventListener("click", (e) => {
-    e.stopPropagation();
-});
+    menu.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
 
-document.addEventListener("click", () => {
-    menu.classList.remove("open");
-});
+    document.addEventListener("click", () => {
+        menu.classList.remove("open");
+    });
 </script>

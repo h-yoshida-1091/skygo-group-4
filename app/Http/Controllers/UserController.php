@@ -26,21 +26,27 @@ class UserController extends Controller
         // メールアドレスでユーザー検索
         $user = User::where('email', $request->email)->first();
 
+
         // ユーザーが存在しない、またはパスワードが一致しない場合
         if (!$user || !Hash::check($request->password, $user->password)) {
-
             return back()->withErrors([
                 'email' => 'メールアドレスまたはパスワードが違います。',
             ])->withInput();
         }
 
-        // セッションに保存
         session([
             'userId' => $user->id,
             'userName' => $user->name,
+            'role' => $user->role,
         ]);
 
+        if ($user->role === 'admin') {
+            return redirect('/admin/dashboard');
+        }
+
         // ダッシュボードへ
+      else
+        
         return redirect('/dashboard');
     }
 
