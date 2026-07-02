@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -27,21 +27,23 @@ class UserController extends Controller
         $user = User::where('email', $request->email)->first();
 
         // ユーザーが存在しない、またはパスワードが違う場合
-        if (!$user || $request->password !== $user->password) {
-
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'email' => 'メールアドレスまたはパスワードが違います。',
             ])->withInput();
         }
 
-        // セッションに保存
         session([
             'userId' => $user->id,
             'userName' => $user->name,
+            'role' => $user->role,
         ]);
 
-        // ダッシュボードへ
-        return redirect('/shift');
+        if ($user->role === 'admin') {
+            return redirect('/admin/dashboard');
+        }
+
+        return redirect('/dashboard');
     }
 
     //ダッシュボード表示
