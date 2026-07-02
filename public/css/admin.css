@@ -1,40 +1,58 @@
 body {
     margin: 0;
-    font-family: "Yu Gothic", sans-serif;
-    background: #f4f6f9;
+    font-family: sans-serif;
+    background-color: #f0f0f0;
 }
 
-/* コンテナ */
+/* 全体 */
 .container {
-    padding: 20px;
+    padding: 30px;
 }
 
-/* タイトル */
-.title {
+/* タイトル（ユーザー画面寄せ） */
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
     margin-bottom: 20px;
+    color: #333;
 }
 
-/* テーブル */
-.table {
+/* テーブル全体 */
+.admin-table {
     width: 100%;
     border-collapse: collapse;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: white;
+    border: 4px solid black;
 }
 
-.table th,
-.table td {
-    border: 1px solid #ddd;
+/* ヘッダー（水色） */
+.admin-table thead {
+    background-color: #87ceeb;
+}
+
+.admin-table th {
     padding: 12px;
+    border: 2px solid black;
+    font-size: 15px;
     text-align: center;
 }
 
-.table th {
-    background: #1976d2;
-    color: white;
+/* 本体 */
+.admin-table td {
+    padding: 12px;
+    border: 2px solid black;
+    font-size: 14px;
+    text-align: center;
+    background: white;
 }
 
-/* ステータス */
+/* ホバー（薄く） */
+.admin-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* ステータス（ユーザー寄せ） */
 .pending {
     color: #ff9800;
     font-weight: bold;
@@ -46,11 +64,11 @@ body {
 }
 
 .rejected {
-    color: #f44336;
+    color: #e53935;
     font-weight: bold;
 }
 
-/* ボタン */
+/* 操作エリア */
 .actions {
     display: flex;
     gap: 10px;
@@ -58,23 +76,35 @@ body {
     align-items: center;
 }
 
+/* ボタン（ユーザー画面寄せ） */
 .btn {
+    background: white;
+    border: 2px solid black;
     padding: 6px 12px;
-    border: none;
+    font-weight: bold;
     cursor: pointer;
-    color: white;
-    border-radius: 4px;
+    border-radius: 10px;
 }
 
-.approve {
-    background: #4caf50;
+/* 承認ボタン */
+.btn.approve {
+    background: white;
+    border-color: black;
 }
 
-.reject {
-    background: #f44336;
+.btn.approve:hover {
+    background: #e0f7fa;
 }
 
-input[type="text"] {
+/* 差し戻しボタン */
+.btn.reject:hover {
+    background: #ffe5e5;
+}
+
+/* コメント入力（ユーザー寄せ） */
+.actions input[type="text"] {
+    border: 3px solid black;
     padding: 5px;
-    width: 120px;
+    font-size: 13px;
+    width: 140px;
 }
