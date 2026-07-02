@@ -1,0 +1,139 @@
+body {
+    margin: 0;
+    font-family: Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+.work-page {
+    width: 92%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+}
+
+/* 集計カード */
+.summary-area {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 34px;
+}
+
+.summary-card {
+    background: #ffffff;
+    border: 1px solid #dbeafe;
+    border-radius: 16px;
+    padding: 22px 16px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+}
+
+.summary-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #334155;
+    margin-bottom: 12px;
+}
+
+.summary-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+/* 月移動 */
+.month-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 26px;
+}
+
+.month-nav h1 {
+    margin: 0;
+    font-size: 40px;
+    color: #1f2937;
+}
+
+.month-btn {
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 14px;
+    border: 1px solid #dbeafe;
+    color: #2563eb;
+    background: #ffffff;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+.month-btn:hover {
+    background: #eff6ff;
+}
+
+/* 表 */
+.table-card {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+}
+
+.table-scroll {
+    max-height: 520px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.work-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.work-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #e0f2fe;
+    color: #0f172a;
+    padding: 16px 10px;
+    font-size: 17px;
+    border-bottom: 1px solid #bae6fd;
+}
+
+.work-table td {
+    padding: 16px 10px;
+    text-align: center;
+    font-size: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.work-table tbody tr:nth-child(even) {
+    background: #f8fbff;
+}
+
+.work-table tbody tr:hover {
+    background: #eff6ff;
+}
+
+.total-work {
+    font-weight: bold;
+    color: #2563eb;
+}
+
+@media (max-width: 800px) {
+    .work-page {
+        width: 96%;
+        padding: 90px 10px 30px;
+    }
+
+    .summary-area {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .month-nav h1 {
+        font-size: 28px;
+    }
+}
