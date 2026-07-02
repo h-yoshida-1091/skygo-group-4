@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>管理者ダッシュボード</title>
-
+    <link rel="icon" type="image/png" href="{{ asset('images/小林大地首.png') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 
