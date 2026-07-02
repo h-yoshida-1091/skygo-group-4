@@ -9,6 +9,14 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        if (!session()->has('userId')) {
+            return redirect('/login');
+        }
+
+        if (session('role') !== 'admin') {
+            return redirect('/dashboard');
+        }
+
         $requests = ShiftRequest::with('user')->get();
 
         return view('admin.dashboard', compact('requests'));
