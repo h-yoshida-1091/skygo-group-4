@@ -26,13 +26,13 @@
 
     <table>
         <tr>
-            <th>日</th>
+            <th class="sun">日</th>
             <th>月</th>
             <th>火</th>
             <th>水</th>
             <th>木</th>
             <th>金</th>
-            <th>土</th>
+            <th class="sat">土</th>
         </tr>
 
         @php
@@ -59,7 +59,16 @@
 
                 <td class="calendar-day" data-date="{{ $dateKey }}">
                     @if ($currentDay->month == $month)
-                    <strong>{{ $currentDay->day }}</strong>
+                    <strong
+                        class="
+                        @if($currentDay->dayOfWeek === 0)
+                            sunday
+                        @elseif($currentDay->dayOfWeek === 6)
+                            saturday
+                        @endif
+                    ">
+                        {{ $currentDay->day }}
+                    </strong>
 
                     <div
                         class="shift-text
@@ -166,53 +175,51 @@
         });
 
         document.querySelectorAll('.calendar-day').forEach(day => {
-            day.addEventListener('click', function() {
-                if (!isEditMode) {
-                    return;
-                }
+    day.addEventListener('click', function() {
+        if (!isEditMode) {
+            return;
+        }
 
-                const shiftText = this.querySelector('.shift-text');
+        const shiftText = this.querySelector('.shift-text');
 
-                if (!shiftText) {
-                    return;
-                }
+        if (!shiftText) {
+            return;
+        }
 
-                if (shiftText.innerHTML.trim() !== '') {
-                    if (!selectedType || !selectedStart || !selectedEnd) {
-                        shiftText.innerHTML = '';
-                        shiftText.removeAttribute('data-type');
-                        shiftText.removeAttribute('data-start');
-                        shiftText.removeAttribute('data-end');
-                        shiftText.classList.remove('has-shift', 'office-shift', 'remote-shift');
-                        return;
-                    }
-                } else {
-                    if (!selectedType || !selectedStart || !selectedEnd) {
-                        alert('出社・リモートと時間を選択してください');
-                        return;
-                    }
-                }
+        if (shiftText.innerHTML.trim() !== '') {
+            shiftText.innerHTML = '';
+            shiftText.removeAttribute('data-type');
+            shiftText.removeAttribute('data-start');
+            shiftText.removeAttribute('data-end');
+            shiftText.classList.remove('has-shift', 'office-shift', 'remote-shift');
+            return;
+        }
 
-                shiftText.dataset.type = selectedType;
-                shiftText.dataset.start = selectedStart;
-                shiftText.dataset.end = selectedEnd;
+        if (!selectedType || !selectedStart || !selectedEnd) {
+            alert('出社・リモートと時間を選択してください');
+            return;
+        }
 
-                shiftText.classList.add('has-shift');
+        shiftText.dataset.type = selectedType;
+        shiftText.dataset.start = selectedStart;
+        shiftText.dataset.end = selectedEnd;
 
-                if (selectedType === 'リモート') {
-                    shiftText.classList.add('remote-shift');
-                    shiftText.classList.remove('office-shift');
-                } else {
-                    shiftText.classList.add('office-shift');
-                    shiftText.classList.remove('remote-shift');
-                }
+        shiftText.classList.add('has-shift');
 
-                shiftText.innerHTML = `
-                ${selectedType}<br>
-                ${selectedStart}〜${selectedEnd}
-            `;
-            });
-        });
+        if (selectedType === 'リモート') {
+            shiftText.classList.add('remote-shift');
+            shiftText.classList.remove('office-shift');
+        } else {
+            shiftText.classList.add('office-shift');
+            shiftText.classList.remove('remote-shift');
+        }
+
+        shiftText.innerHTML = `
+            ${selectedType}<br>
+            ${selectedStart}〜${selectedEnd}
+        `;
+    });
+});
 
 
         const mainShiftButton = document.getElementById('mainShiftButton');
