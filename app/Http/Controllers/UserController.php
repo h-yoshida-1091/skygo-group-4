@@ -41,7 +41,7 @@ class UserController extends Controller
         ]);
 
         // ダッシュボードへ
-        return redirect('/shift');
+        return redirect('/dashboard');
     }
 
     //ダッシュボード表示
