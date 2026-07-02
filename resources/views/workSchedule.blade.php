@@ -47,8 +47,8 @@
 </tr>
 </thead>
 <tbody>
-{{-- コントローラーから渡された$attendancesコレクションをループし、1日ずつ行を出力 --}}
-@foreach($attendances as $row)
+{{-- コントローラーから渡された$workScheduleコレクションをループし、1日ずつ行を出力 --}}
+@foreach($workSchedule as $row)
 <tr>
 <td class="border p-2 text-center">{{ $row->date->format('n/j') }}</td>
 <td class="border p-2 text-center">{{ $row->type }}</td>
