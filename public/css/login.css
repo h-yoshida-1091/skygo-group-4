@@ -1,0 +1,142 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Yu Gothic", "Meiryo", sans-serif;
+    background: #0f172a;
+    overflow: hidden;
+}
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 24px;
+}
+
+/* 背景の流れる文字 */
+.word-background {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.word-background {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.floating-word {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.22);
+    font-weight: bold;
+    white-space: nowrap;
+    user-select: none;
+    animation: float-word linear infinite alternate;
+}
+
+@keyframes float-word {
+    from {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    to {
+        transform: translate(var(--move-x), var(--move-y)) rotate(var(--rotate));
+    }
+}
+
+@keyframes scroll-left {
+    from {
+        transform: translateX(100vw);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes scroll-right {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(100vw);
+    }
+}
+
+/* ログインカード */
+.login-card {
+    width: 420px;
+    padding: 38px 42px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 22px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    z-index: 1;
+}
+
+.login-card h1 {
+    text-align: center;
+    margin: 0 0 28px;
+    color: #1e293b;
+    font-size: 32px;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.login-button {
+    width: 100%;
+    margin-top: 8px;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-button:hover {
+    background: #1d4ed8;
+}
+
+.error-message {
+    margin-bottom: 20px;
+    padding: 12px 14px;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 10px;
+    font-weight: bold;
+}
