@@ -48,28 +48,35 @@
     <div class="modal-overlay" id="editModal" onclick="closeModal(event)">
         <div class="modal-body" onclick="event.stopPropagation()"> <div class="modal-date" id="modalDate">2026年6月29日</div>
             
-            <form id="editForm" action="" method="POST">
-                @csrf
-                @method('PUT')
-                <textarea class="modal-textbox" name="note" placeholder="修正理由やメモを入力"></textarea>
-                <button type="submit" class="modal-submit-btn">修正を申請</button>
-            </form>
+    <form id="editForm" action="" method="POST">
+        @csrf
+        <div style="margin-bottom: 10px;">
+            <label>希望出勤時間：</label>
+            <input type="time" name="requested_clock_in" required style="border: 2px solid black; padding: 5px;">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <label>希望退勤時間：</label>
+            <input type="time" name="requested_clock_out" style="border: 2px solid black; padding: 5px;">
+        </div>
+
+        <textarea class="modal-textbox" name="reason" placeholder="修正理由を入力してください（必須）" required></textarea>
+    
+        <button type="submit" class="modal-submit-btn">申請する</button>
+    </form>
         </div>
     </div>
 
     <script>
         function openModal(element) {
-            // クリックされた行からデータを取得
             const id = element.getAttribute('data-id');
-            const dateStr = element.getAttribute('data-date'); // 例: 2026-06-29
-            
-            // ポップアップ内の日付表示を書き換える
+            const dateStr = element.getAttribute('data-date');
+    
             document.getElementById('modalDate').innerText = dateStr;
-            
-            // フォームの送信先（Action）を更新したIDのURLに動的に変更
-            document.getElementById('editForm').action = `/attendances/${id}`;
-            
-            // ポップアップを表示
+    
+            // 送信先URLを /attendances/{id}/request に変更
+            document.getElementById('editForm').action = `/attendances/${id}/request`;
+    
             document.getElementById('editModal').classList.add('is-open');
         }
 

@@ -29,6 +29,7 @@ Route::post('/shift', [ShiftController::class, 'store'])->name('shift.store');
 
 // ダッシュボード表示
 Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
+Route::post('/dashboard/{attendance_id}/request', [AttendanceController::class, 'storeRequest']);
 
 Route::post('/attendances/clock-in', [AttendanceController::class, 'clockIn']);
 Route::post('/attendances/clock-out', [AttendanceController::class, 'clockOut']);
@@ -50,5 +51,3 @@ Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
 
 // 勤怠画面の表示
 Route::get('/workschedule', [WorkScheduleController::class, 'index'])->name('workschedule');
-
-
