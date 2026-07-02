@@ -6,9 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 </head>
 <body>
-
-    <div class="header">勤怠管理アプリ</div>
-
+    @include('layouts.header')
     <div class="container">
         <div class="punch-area">
             <form action="/attendances/clock-in" method="POST">
