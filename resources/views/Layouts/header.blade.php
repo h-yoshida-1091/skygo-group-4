@@ -133,7 +133,7 @@
     <a href="#">勤怠申請</a>
     <a href="{{ route('shift.index') }}">シフト一覧、シフト修正</a>
 
-    <form action="#" method="POST">
+    <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="app-logout-btn">ログアウト</button>
     </form>

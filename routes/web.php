@@ -14,7 +14,7 @@ Route::get('/login', [UserController::class, 'showLoginForm']);
 Route::post('/login', [UserController::class, 'login']);
 
 //ログアウト処理
-Route::post('/logout', [UserController::class, 'logout']);
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 //ダッシュボード
 Route::get('/dashboard', [UserController::class, 'dashboard']);
