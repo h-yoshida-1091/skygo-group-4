@@ -50,7 +50,7 @@ class WorkScheduleController extends Controller
         ];
 
         // 6. ビューにデータを渡して変数を展開
-        return view('workSchedule.index', [
+        return view('workSchedule', [
             'tab'          => $tab,
             'currentMonth' => $currentMonth->format('Y-m'),
             'prevMonth'    => $prevMonth,

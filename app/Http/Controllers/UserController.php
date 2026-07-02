@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -26,8 +26,8 @@ class UserController extends Controller
         // メールアドレスでユーザー検索
         $user = User::where('email', $request->email)->first();
 
-        // ユーザーが存在しない、またはパスワードが違う場合
-        if (!$user || $request->password !== $user->password) {
+        // ユーザーが存在しない、またはパスワードが一致しない場合
+        if (!$user || !Hash::check($request->password, $user->password)) {
 
             return back()->withErrors([
                 'email' => 'メールアドレスまたはパスワードが違います。',

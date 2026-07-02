@@ -1,5 +1,4 @@
-@extends('layouts.app')
-@section('content')
+
 <div class="container mx-auto p-4">
    {{-- サマリーエリアの開始 --}}
    {{-- コントローラーから渡された$summary配列の中身をループで展開し、カードとして表示する箇所 --}}
@@ -63,4 +62,3 @@
 </table>
 </div>
 </div>
-@endsection
