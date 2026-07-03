@@ -41,7 +41,7 @@ Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
 
 // ダッシュボード表示
 Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
-Route::post('/dashboard/{attendance_id}/request', [AttendanceController::class, 'storeRequest']);
+Route::post('/attendances/{attendanceId}/request', [AttendanceController::class, 'storeRequest']);
 
 // 勤務表
 Route::get('/workschedule', [WorkScheduleController::class, 'index'])->name('workschedule');
