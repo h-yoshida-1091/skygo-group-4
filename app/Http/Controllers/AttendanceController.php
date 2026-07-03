@@ -135,26 +135,4 @@ class AttendanceController extends Controller
 
         return redirect()->back()->with('success', '打刻修正のリクエストを送信しました（承認待ち）。');
     }
-
-    /**
-     * 【修正】管理者が申請を「承認（approved）」したときの処理
-     * （本来は管理者用画面のコントローラーに分けるのが理想ですが、一旦ここに記載します）
-     */
-    // public function approveRequest($requestId)
-    // {
-    //     // 申請データを取得
-    //     $attendanceRequest = AttendanceRequest::findOrFail($requestId);
-
-    //     // 1. 申請のステータスを「approved（承認）」に更新
-    //     $attendanceRequest->update(['status' => 'approved']);
-
-    //     // 2. 元の勤怠データ（attendancesテーブル）を申請された時間で上書きする！
-    //     $attendance = Attendance::findOrFail($attendanceRequest->attendance_id);
-    //     $attendance->update([
-    //         'clock_in'  => $attendanceRequest->requested_clock_in,
-    //         'clock_out' => $attendanceRequest->requested_clock_out,
-    //     ]);
-
-    //     return redirect()->back()->with('success', '申請を承認し、勤怠データを更新しました。');
-    // }
 }

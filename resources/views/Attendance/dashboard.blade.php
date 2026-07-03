@@ -20,8 +20,6 @@
             </form>
         </div>
 
-
-
     <div class="history-wrapper" style="flex: 1;">
         <h2 class="history-title" style="text-align: center; font-size: 24px; font-weight: bold; margin-top: 0; margin-bottom: 10px;">勤怠履歴</h2>
     
