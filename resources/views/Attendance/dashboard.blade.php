@@ -28,7 +28,7 @@
         <div class="history-area">    
             @foreach($attendances as $attendance)
                 <div class="date-group">
-                    <div class="date-label">{{ $attendance->work_date }}</div>
+                    <div class="date-label">{{ \Carbon\Carbon::parse($attendance->work_date)->format('Y-m-d') }}</div>
                     
                     <div class="history-item" data-id="{{ $attendance->id }}" data-date="{{ $attendance->work_date }}" data-time="{{ $attendance->clock_in }}" onclick="openModal(this)">
                         <span class="badge">出勤</span>

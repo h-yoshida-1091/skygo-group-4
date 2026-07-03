@@ -8,6 +8,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\WorkScheduleController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\UserCharacterController;
 
 /*トップ*/
 
@@ -41,7 +42,7 @@ Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
 
 // ダッシュボード表示
 Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
-Route::post('/dashboard/{attendance_id}/request', [AttendanceController::class, 'storeRequest']);
+Route::post('/attendances/{attendanceId}/request', [AttendanceController::class, 'storeRequest']);
 
 // 勤務表
 Route::get('/workschedule', [WorkScheduleController::class, 'index'])->name('workschedule');
@@ -78,5 +79,17 @@ Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])
 Route::put('/users/{id}', [AdminUserController::class, 'update'])
     ->name('admin.users.update');
 
+
 Route::post('/users', [AdminUserController::class, 'store'])
     ->name('admin.users.store');
+
+//　相棒管理
+Route::get('/character', [UserCharacterController::class, 'index'])
+    ->name('character.index');
+
+Route::post('/character/select', [UserCharacterController::class, 'select'])
+    ->name('character.select');
+
+Route::put('/character/update', [UserCharacterController::class, 'update'])
+    ->name('character.update');
+
