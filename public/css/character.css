@@ -1,0 +1,101 @@
+/* 全体 */
+body {
+    margin: 0;
+    padding: 40px;
+    background: linear-gradient(135deg, #dff6ff, #ffffff);
+    font-family: "Yu Gothic", sans-serif;
+    text-align: center;
+}
+
+/* タイトル */
+h1 {
+    color: #2c7a7b;
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* キャラクター一覧 */
+.character-list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* カード */
+.character-card {
+    width: 220px;
+    background: white;
+    border: 3px solid #ddd;
+    border-radius: 20px;
+    padding: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.character-card:hover {
+    transform: translateY(-8px);
+    border-color: #4caf50;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+}
+
+.character-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+.character-card h3 {
+    margin-top: 15px;
+    color: #333;
+}
+
+.character-card p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* ラジオボタン非表示 */
+.character-card input[type="radio"] {
+    display: none;
+}
+
+/* 選択中 */
+.character-card:has(input:checked) {
+    border: 4px solid #ff9800;
+    background: #fff8e1;
+}
+
+/* ニックネーム */
+input[type="text"] {
+    width: 280px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+/* 決定ボタン */
+button {
+    margin-top: 30px;
+    padding: 12px 35px;
+    border: none;
+    border-radius: 30px;
+    background: #4caf50;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #43a047;
+    transform: scale(1.05);
+}

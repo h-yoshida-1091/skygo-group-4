@@ -8,6 +8,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\WorkScheduleController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\UserCharacterController;
 
 /*トップ*/
 
@@ -69,8 +70,26 @@ Route::get('/admin/users', [AdminUserController::class, 'index'])
 Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])
     ->name('admin.users.destroy');
 
+Route::delete('/users/{id}/force', [AdminUserController::class, 'forceDelete'])
+    ->name('admin.users.forceDelete');
+
 Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])
     ->name('admin.users.edit');
 
 Route::put('/users/{id}', [AdminUserController::class, 'update'])
     ->name('admin.users.update');
+
+
+Route::post('/users', [AdminUserController::class, 'store'])
+    ->name('admin.users.store');
+
+//　相棒管理
+Route::get('/character', [UserCharacterController::class, 'index'])
+    ->name('character.index');
+
+Route::post('/character/select', [UserCharacterController::class, 'select'])
+    ->name('character.select');
+
+Route::put('/character/update', [UserCharacterController::class, 'update'])
+    ->name('character.update');
+
