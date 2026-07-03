@@ -70,11 +70,18 @@ Route::get('/admin/users', [AdminUserController::class, 'index'])
 Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])
     ->name('admin.users.destroy');
 
+Route::delete('/users/{id}/force', [AdminUserController::class, 'forceDelete'])
+    ->name('admin.users.forceDelete');
+
 Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])
     ->name('admin.users.edit');
 
 Route::put('/users/{id}', [AdminUserController::class, 'update'])
     ->name('admin.users.update');
+
+
+Route::post('/users', [AdminUserController::class, 'store'])
+    ->name('admin.users.store');
 
 //　相棒管理
 Route::get('/character', [UserCharacterController::class, 'index'])
@@ -85,3 +92,4 @@ Route::post('/character/select', [UserCharacterController::class, 'select'])
 
 Route::put('/character/update', [UserCharacterController::class, 'update'])
     ->name('character.update');
+

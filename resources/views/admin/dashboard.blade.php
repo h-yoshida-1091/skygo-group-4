@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <title>管理者ダッシュボード</title>
 
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/小林大地首.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/admindashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 </head>
 
@@ -17,7 +18,7 @@
 
         <h1 class="page-title">申請一覧（管理者）</h1>
 
-        <table class="admin-table">
+        <table class="table">
 
             <thead>
                 <tr>
@@ -35,7 +36,11 @@
                 @if(isset($requests) && count($requests) > 0)
 
                 @foreach($requests as $req)
-                <tr>
+                <tr class="
+                    {{ $req->status == 'pending' ? 'pending-row' : '' }}
+                    {{ $req->status == 'approved' ? 'approved-row' : '' }}
+                    {{ $req->status == 'rejected' ? 'rejected-row' : '' }}
+                    ">
                     <td>{{ $req->user->name ?? '未設定ユーザー' }}</td>
                     <td>{{ $req->date ?? '-' }}</td>
                     <td>{{ $req->start_time ?? '-' }}</td>
