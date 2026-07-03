@@ -53,10 +53,10 @@ Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
     ->name('admin.dashboard');
 
 //シフト承認
-Route::post('/shifts/{id}/approve', [AdminController::class, 'approve'])
+Route::post('/admin/shifts/{id}/approve', [AdminController::class, 'approve'])
     ->name('admin.shifts.approve');
 
-Route::post('/shifts/{id}/reject', [AdminController::class, 'reject'])
+Route::post('/admin/shifts/{id}/reject', [AdminController::class, 'reject'])
     ->name('admin.shifts.reject');
 
 // ユーザー管理
@@ -66,11 +66,18 @@ Route::get('/admin/users', [AdminUserController::class, 'index'])
 Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])
     ->name('admin.users.destroy');
 
+Route::delete('/admin/users/{id}/force', [AdminUserController::class, 'forceDelete'])
+    ->name('admin.users.forceDelete');
+
 Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'edit'])
     ->name('admin.users.edit');
 
 Route::put('/admin/users/{id}', [AdminUserController::class, 'update'])
     ->name('admin.users.update');
+
+
+Route::post('/admin/users', [AdminUserController::class, 'store'])
+    ->name('admin.users.store');
 
 //　相棒管理
 Route::get('/character', [UserCharacterController::class, 'index'])
@@ -81,3 +88,4 @@ Route::post('/character/select', [UserCharacterController::class, 'select'])
 
 Route::put('/character/update', [UserCharacterController::class, 'update'])
     ->name('character.update');
+
