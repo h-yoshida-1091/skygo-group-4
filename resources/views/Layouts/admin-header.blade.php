@@ -12,11 +12,10 @@
 
     <a href="/admin/dashboard">📊 管理者ダッシュボード</a>
 
-    <a href="/shift">📋 シフト申請一覧</a>
+    <a href="#">📋 シフト申請一覧</a>
 
     <a href="/admin/users">👤 ユーザー管理</a>
 
-    <a href="/dashboard">🏠 一般画面へ</a>
 
     <form action="{{ route('logout') }}" method="POST">
         @csrf
