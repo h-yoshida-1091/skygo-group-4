@@ -4,58 +4,63 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function edit()
     {
-        $user = Auth::user();
+        $user = User::find(session('userId'));
+
+        if (!$user) {
+            return redirect('/login');
+        }
+
         return view('Account.edit', compact('user'));
     }
 
-    // ログイン画面表示
     public function showLoginForm()
     {
         return view('Account.login');
     }
 
-    // ログイン処理（Laravel標準Auth）
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // 認証処理
-        if (Auth::attempt($credentials)) {
+        $user = User::where('email', $request->email)->first();
 
-            // セッション再生成（重要）
-            $request->session()->regenerate();
-
-            $user = Auth::user();
-
-            // 管理者振り分け
-            if ($user->role === 'admin') {
-                return redirect()->intended('/admin/dashboard');
-            }
-
-            return redirect()->intended('/dashboard');
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'email' => 'メールアドレスまたはパスワードが違います。',
+            ])->withInput();
         }
 
-        return back()->withErrors([
-            'email' => 'メールアドレスまたはパスワードが違います。',
-        ])->withInput();
-    }
+        $request->session()->regenerate();
 
+        session([
+            'userId' => $user->id,
+            'userName' => $user->name,
+            'userRole' => $user->role,
+        ]);
+
+        if ($user->role === 'admin') {
+            return redirect('/admin/dashboard');
+        }
+
+        return redirect('/dashboard');
+    }
 
     public function update(Request $request)
     {
-        $user = Auth::user();
+        $user = User::find(session('userId'));
 
-        /** @var \App\Models\User $user */
+        if (!$user) {
+            return redirect('/login');
+        }
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -67,6 +72,7 @@ class UserController extends Controller
             'email.email' => 'メールアドレス形式が正しくありません',
             'password.min' => 'パスワードは6文字以上にしてください',
         ]);
+
         $user->name = $request->name;
         $user->email = $request->email;
 
@@ -74,22 +80,32 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        $user->save(); // ← これでOK
+        $user->save();
+
+        session([
+            'userName' => $user->name,
+        ]);
 
         return redirect()->route('account.edit')
             ->with('success', 'アカウントを更新しました');
     }
 
-    // ダッシュボード表示
     public function dashboard()
     {
+        if (!session()->has('userId')) {
+            return redirect('/login');
+        }
+
         return view('dashboard');
     }
 
-    // ログアウト
     public function logout(Request $request)
     {
-        Auth::logout();
+        session()->forget([
+            'userId',
+            'userName',
+            'userRole',
+        ]);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

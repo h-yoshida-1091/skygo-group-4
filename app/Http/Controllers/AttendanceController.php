@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\AttendanceRequest;
 use Carbon\Carbon;
 
 class AttendanceController extends Controller
@@ -17,7 +17,7 @@ class AttendanceController extends Controller
         // 本来はログインユーザー（Auth::id()）で絞り込みますが、
         // 今回はテスト用に一旦usersテーブルの一番最初のユーザーのデータを取得します
         // ※ログイン機能を実装したら Auth::id() に書き換えてください
-        $userId = 1; 
+        $userId = session('userId');
 
         // 勤怠履歴を日付が新しい順に取得
         $attendances = Attendance::where('user_id', $userId)

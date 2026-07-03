@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>勤務表</title>
     <link rel="stylesheet" href="{{ asset('css/workSchedule.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/小林大地首.png') }}">
 </head>
 
 <body>
