@@ -13,7 +13,7 @@ class AdminController extends Controller
             return redirect('/login');
         }
 
-        if (session('role') !== 'admin') {
+        if (session('userRole') !== 'admin') {
             return redirect('/dashboard');
         }
 
