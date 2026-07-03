@@ -1,5 +1,6 @@
 @include('Layouts.admin-header')
 
+<link rel="icon" type="image/png" href="{{ asset('images/小林大地首.png') }}">
 <link rel="stylesheet" href="{{ asset('css/account-edit.css') }}">
 
 <div class="edit-wrapper">
