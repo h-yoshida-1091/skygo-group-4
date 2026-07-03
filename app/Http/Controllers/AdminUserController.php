@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AdminUserController extends Controller
 {
-    // 一覧（検索＋ページネーション）
     public function index(Request $request)
     {
+        if (!session()->has('userId')) {
+            return redirect('/login');
+        }
+
+        if (session('userRole') !== 'admin') {
+            return redirect('/dashboard');
+        }
+
         $query = User::query();
 
-        // 名前検索
         if ($request->filled('keyword')) {
             $query->where('name', 'like', '%' . $request->keyword . '%');
         }
@@ -26,21 +31,26 @@ class AdminUserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    // 削除
-    public function destroy($id)
+    public function destroy(int $id)
     {
+        if (!session()->has('userId')) {
+            return redirect('/login');
+        }
+
+        if (session('userRole') !== 'admin') {
+            return redirect('/dashboard');
+        }
+
         $user = User::findOrFail($id);
 
-        $authId = Auth::id(); // ← 明示的に取得（安全）
+        $loginUserId = session('userId');
 
-        // 自分自身削除防止
-        if ($authId !== null && $authId === $user->id) {
+        if ((int)$loginUserId === (int)$user->id) {
             return redirect()
                 ->back()
                 ->with('error', '自分自身は削除できません');
         }
 
-        // 管理者保護（追加推奨）
         if ($user->role === 'admin') {
             return redirect()
                 ->back()
@@ -54,15 +64,31 @@ class AdminUserController extends Controller
             ->with('success', 'ユーザーを削除しました');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
+        if (!session()->has('userId')) {
+            return redirect('/login');
+        }
+
+        if (session('userRole') !== 'admin') {
+            return redirect('/dashboard');
+        }
+
         $user = User::findOrFail($id);
 
         return view('admin.users.edit', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
+        if (!session()->has('userId')) {
+            return redirect('/login');
+        }
+
+        if (session('userRole') !== 'admin') {
+            return redirect('/dashboard');
+        }
+
         $user = User::findOrFail($id);
 
         $request->validate([
