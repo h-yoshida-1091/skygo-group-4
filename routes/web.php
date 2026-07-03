@@ -24,10 +24,6 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 
-
-// ダッシュボード
-Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
-
 // 勤怠
 Route::post('/attendances/clock-in', [AttendanceController::class, 'clockIn']);
 Route::post('/attendances/clock-out', [AttendanceController::class, 'clockOut']);
@@ -67,13 +63,13 @@ Route::post('/shifts/{id}/reject', [AdminController::class, 'reject'])
 Route::get('/admin/users', [AdminUserController::class, 'index'])
     ->name('admin.users.index');
 
-Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])
+Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])
     ->name('admin.users.destroy');
 
-Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])
+Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'edit'])
     ->name('admin.users.edit');
 
-Route::put('/users/{id}', [AdminUserController::class, 'update'])
+Route::put('/admin/users/{id}', [AdminUserController::class, 'update'])
     ->name('admin.users.update');
 
 //　相棒管理

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserCharacter;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Models\AttendanceRequest;
@@ -14,14 +15,19 @@ class AttendanceController extends Controller
      */
     public function index()
     {
+        if (!session()->has('userId')) {
+            return redirect('/login');
+        }
+
         $userId = session('userId');
 
-        // 勤怠履歴を日付が新しい順に取得
         $attendances = Attendance::where('user_id', $userId)
             ->orderBy('work_date', 'desc')
             ->get();
 
-        return view('Attendance/dashboard', compact('attendances'));
+        $character = UserCharacter::where('user_id', $userId)->first();
+
+        return view('Attendance.dashboard', compact('attendances', 'character'));
     }
 
     /**
@@ -91,7 +97,7 @@ class AttendanceController extends Controller
         ]);
 
         $attendance = Attendance::findOrFail($id);
-        
+
         // 備考（メモ）などを更新
         // ※もし時間を修正させる場合は、リクエストから時間を受け取って更新します
         $attendance->update([
@@ -111,14 +117,14 @@ class AttendanceController extends Controller
         ]);
 
         $userId = session('userId');
-        
+
         // 元の勤怠データを取得
         $attendance = Attendance::findOrFail($attendanceId);
 
         // 画面から送られてきた時間（H:i）を、日付と結合して Y-m-d H:i:s の形にする
         $workDate = Carbon::parse($attendance->work_date)->format('Y-m-d');
         $requestedClockIn = Carbon::parse($workDate . ' ' . $request->input('requested_clock_in'));
-        $requestedClockOut = $request->input('requested_clock_out') 
+        $requestedClockOut = $request->input('requested_clock_out')
             ? Carbon::parse($workDate . ' ' . $request->input('requested_clock_out'))
             : null;
 
