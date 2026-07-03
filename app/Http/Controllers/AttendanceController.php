@@ -14,9 +14,6 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        // 本来はログインユーザー（Auth::id()）で絞り込みますが、
-        // 今回はテスト用に一旦usersテーブルの一番最初のユーザーのデータを取得します
-        // ※ログイン機能を実装したら Auth::id() に書き換えてください
         $userId = session('userId');
 
         // 勤怠履歴を日付が新しい順に取得
@@ -32,7 +29,7 @@ class AttendanceController extends Controller
      */
     public function clockIn(Request $request)
     {
-        $userId = 1; // テスト用（後で Auth::id() に変更）
+        $userId = session('userId'); // テスト用（後で Auth::id() に変更）
         $today = Carbon::today()->format('Y-m-d');
 
         // すでに今日出勤しているかチェック（二重打刻防止）
@@ -59,7 +56,7 @@ class AttendanceController extends Controller
      */
     public function clockOut(Request $request)
     {
-        $userId = 1; // テスト用（後で Auth::id() に変更）
+        $userId = session('userId');
         $today = Carbon::today()->format('Y-m-d');
 
         // 今日の出勤レコードを探す
@@ -113,13 +110,13 @@ class AttendanceController extends Controller
             'reason'              => 'required|string|max:500',
         ]);
 
-        $userId = 1; // テスト用（ログイン機能実装後は Auth::id() ）
+        $userId = session('userId');
         
         // 元の勤怠データを取得
         $attendance = Attendance::findOrFail($attendanceId);
 
         // 画面から送られてきた時間（H:i）を、日付と結合して Y-m-d H:i:s の形にする
-        $workDate = $attendance->work_date;
+        $workDate = Carbon::parse($attendance->work_date)->format('Y-m-d');
         $requestedClockIn = Carbon::parse($workDate . ' ' . $request->input('requested_clock_in'));
         $requestedClockOut = $request->input('requested_clock_out') 
             ? Carbon::parse($workDate . ' ' . $request->input('requested_clock_out'))
