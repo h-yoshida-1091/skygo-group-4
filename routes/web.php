@@ -24,10 +24,6 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 
-
-// ダッシュボード
-Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
-
 // 勤怠
 Route::post('/attendances/clock-in', [AttendanceController::class, 'clockIn']);
 Route::post('/attendances/clock-out', [AttendanceController::class, 'clockOut']);
@@ -57,30 +53,30 @@ Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
     ->name('admin.dashboard');
 
 //シフト承認
-Route::post('/shifts/{id}/approve', [AdminController::class, 'approve'])
+Route::post('/admin/shifts/{id}/approve', [AdminController::class, 'approve'])
     ->name('admin.shifts.approve');
 
-Route::post('/shifts/{id}/reject', [AdminController::class, 'reject'])
+Route::post('/admin/shifts/{id}/reject', [AdminController::class, 'reject'])
     ->name('admin.shifts.reject');
 
 // ユーザー管理
 Route::get('/admin/users', [AdminUserController::class, 'index'])
     ->name('admin.users.index');
 
-Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])
+Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])
     ->name('admin.users.destroy');
 
-Route::delete('/users/{id}/force', [AdminUserController::class, 'forceDelete'])
+Route::delete('/admin/users/{id}/force', [AdminUserController::class, 'forceDelete'])
     ->name('admin.users.forceDelete');
 
-Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])
+Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'edit'])
     ->name('admin.users.edit');
 
-Route::put('/users/{id}', [AdminUserController::class, 'update'])
+Route::put('/admin/users/{id}', [AdminUserController::class, 'update'])
     ->name('admin.users.update');
 
 
-Route::post('/users', [AdminUserController::class, 'store'])
+Route::post('/admin/users', [AdminUserController::class, 'store'])
     ->name('admin.users.store');
 
 //　相棒管理

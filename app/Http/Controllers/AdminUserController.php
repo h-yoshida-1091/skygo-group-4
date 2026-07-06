@@ -40,37 +40,19 @@ class AdminUserController extends Controller
     }
 
     public function destroy(int $id)
-    {
-        if (!session()->has('userId')) {
-            return redirect('/login');
-        }
-
-        if (session('userRole') !== 'admin') {
-            return redirect('/dashboard');
-        }
+{
+    try {
 
         $user = User::findOrFail($id);
 
-        $loginUserId = session('userId');
-
-        if ((int)$loginUserId === (int)$user->id) {
-            return redirect()
-                ->back()
-                ->with('error', '自分自身は削除できません');
-        }
-
-        if ($user->role === 'admin') {
-            return redirect()
-                ->back()
-                ->with('error', '管理者ユーザーは削除できません');
-        }
-
         $user->forceDelete();
 
-        return redirect()
-            ->back()
-            ->with('success', 'ユーザーを削除しました');
+        return back()->with('success', '削除しました');
+
+    } catch (\Exception $e) {
+        dd($e->getMessage());
     }
+}
 
     public function edit(int $id)
     {
@@ -99,18 +81,26 @@ class AdminUserController extends Controller
 
         $user = User::findOrFail($id);
 
-
-
         $request->validate([
             'name' => 'required|string|max:255',
-            'role' => 'required',
+            'email' => 'required|email',
+            'role' => 'required|in:user,admin',
+            'department' => 'required',
+            'password' => 'nullable|min:6',
         ]);
 
-        $user->update([
+        $data = [
             'name' => $request->name,
-            'password' => Hash::make($request->password),
+            'email' => $request->email,
             'role' => $request->role,
-        ]);
+            'department' => $request->department,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
 
         return redirect()
             ->route('admin.users.index')
