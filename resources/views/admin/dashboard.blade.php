@@ -29,85 +29,97 @@
             </button>
         </div>
 
-        <!-- =============================
-         シフト申請
-    ============================== -->
+        <!--シフト申請-->
 
         <div id="shift" class="tab-content active">
 
             <table class="table">
-
                 <thead>
                     <tr>
                         <th>申請者名</th>
-                        <th>日付</th>
+                        <th>申請日付</th>
+                        <th>シフト日付</th>
+                        <th>出社形態</th>
                         <th>ステータス</th>
                         <th>操作</th>
                     </tr>
                 </thead>
 
                 <tbody>
-
                     @forelse($shiftRequests as $req)
-
                     <tr>
 
+                        <!-- 申請者名 -->
                         <td>{{ $req->user->name ?? '未設定ユーザー' }}</td>
 
-                        <td>{{ $req->date }}</td>
-
+                        <!-- 申請日付 -->
                         <td>
+                            {{ optional($req->submitted_at)->format('Y-m-d') 
+                    ?? $req->created_at->format('Y-m-d') }}
+                        </td>
 
-                            @if($req->status=="pending")
+                        <!-- シフト日付 -->
+                        <td>{{ \Carbon\Carbon::parse($req->work_date)->format('Y-m-d') }}</td>
+
+                        <!-- 出社形態 -->
+                        <td>
+                            @if($req->remote)
+                            リモート
+                            @else
+                            出社
+                            @endif
+                        </td>
+
+                        <!-- ステータス -->
+                        <td>
+                            @if($req->status === 'pending')
                             <span class="pending">申請中</span>
-                            @elseif($req->status=="approved")
+                            @elseif($req->status === 'approved')
                             <span class="approved">承認</span>
                             @else
                             <span class="rejected">差し戻し</span>
                             @endif
-
                         </td>
 
+                        <!-- 操作 -->
                         <td>
+                            @if($req->status === 'pending')
 
-                            <form action="{{ route('admin.shifts.approve',$req->id) }}" method="POST" style="display:inline;">
+                            <!-- 承認 -->
+                            <form action="{{ route('admin.shifts.approve', $req->id) }}" method="POST" style="display:inline;">
                                 @csrf
-                                <button class="btn approve">
-                                    承認
-                                </button>
+                                <button class="btn approve">承認</button>
                             </form>
 
-                            <form action="{{ route('admin.shifts.reject',$req->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button class="btn reject">
-                                    差し戻し
-                                </button>
-                            </form>
+                            <!-- 差し戻し -->
+                            <button type="button" class="btn reject" onclick="openRejectModal('{{ $req->id }}')">
+                                差し戻し
+                            </button>
 
+                            @elseif($req->status === 'approved')
+
+                            <span style="color:green; font-weight:bold;">承認済み</span>
+
+                            @elseif($req->status === 'rejected')
+
+                            <span style="color:red; font-weight:bold;">差し戻し済み</span>
+
+                            @endif
                         </td>
 
                     </tr>
-
                     @empty
-
                     <tr>
-                        <td colspan="4">
-                            シフト申請はありません
-                        </td>
+                        <td colspan="6">シフト申請はありません</td>
                     </tr>
-
                     @endforelse
-
                 </tbody>
-
             </table>
 
         </div>
 
 
-        <!-- =============================
-         打刻修正申請
-    ============================== -->
+        <!--打刻修正申請-->
 
         <div id="attendance" class="tab-content">
 
@@ -148,18 +160,14 @@
 
                         <td>
 
-                            <form action="{{ route('admin.attendance.approve',$req->id) }}" method="POST" style="display:inline;">
+                            <form action="{{ route('admin.shift.approve', $req->id) }}" method="POST">
                                 @csrf
-                                <button class="btn approve">
-                                    承認
-                                </button>
+                                <button class="btn approve">承認</button>
                             </form>
 
-                            <form action="{{ route('admin.attendance.reject',$req->id) }}" method="POST" style="display:inline;">
+                            <form action="{{ route('admin.shift.reject', $req->id) }}" method="POST">
                                 @csrf
-                                <button class="btn reject">
-                                    差し戻し
-                                </button>
+                                <button class="btn reject">差し戻し</button>
                             </form>
 
                         </td>
@@ -184,6 +192,27 @@
 
     </div>
 
+    <!-- 差し戻しモーダル -->
+    <div id="rejectModal" class="reject-modal">
+
+        <div class="reject-modal-box">
+
+            <form id="rejectForm" method="POST">
+                @csrf
+
+                <textarea name="comment" placeholder="コメント" required></textarea>
+
+                <div class="reject-modal-buttons">
+                    <button type="submit" class="btn-submit">送信</button>
+                    <button type="button" class="btn-close" onclick="closeRejectModal()">閉じる</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
     <script>
         function showTab(tabName) {
 
@@ -198,6 +227,20 @@
             document.getElementById(tabName).classList.add('active');
 
             event.target.classList.add('active');
+        }
+
+        let rejectId = null;
+
+        function openRejectModal(id) {
+            rejectId = id;
+            document.getElementById('rejectModal').style.display = 'block';
+
+            const form = document.getElementById('rejectForm');
+            form.action = `/admin/shifts/${id}/reject`;
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').style.display = 'none';
         }
     </script>
 
