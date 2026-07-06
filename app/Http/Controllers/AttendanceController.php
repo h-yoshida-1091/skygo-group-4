@@ -65,7 +65,6 @@ class AttendanceController extends Controller
         $userId = session('userId');
         $today = Carbon::today()->format('Y-m-d');
 
-        // 今日の出勤レコードを探す
         $attendance = Attendance::where('user_id', $userId)
             ->where('work_date', $today)
             ->first();
@@ -78,12 +77,81 @@ class AttendanceController extends Controller
             return redirect()->back()->with('error', '本日はすでに退勤打刻済みです。');
         }
 
-        // 退勤時間を更新
+        $clockOutTime = Carbon::now();
+
         $attendance->update([
-            'clock_out' => Carbon::now(),
+            'clock_out' => $clockOutTime,
         ]);
 
-        return redirect()->back()->with('success', '退勤しました！お疲れ様でした。');
+        $clockInTime = Carbon::parse($attendance->clock_in);
+
+        $workMinutes = $clockInTime->diffInMinutes($clockOutTime);
+
+        $addExp = floor($workMinutes / 10);
+
+        $character = UserCharacter::where('user_id', $userId)->first();
+
+        $message = '退勤しました！お疲れ様でした。';
+
+        if ($character) {
+            $character->total_work_time += $workMinutes;
+            $character->login_count += 1;
+            $character->exp += $addExp;
+
+            $levelUpCount = 0;
+
+            while ($character->exp >= $character->level * 100) {
+                $character->exp -= $character->level * 100;
+                $character->level += 1;
+                $levelUpCount++;
+            }
+
+            if ($character->level >= 150) {
+                $character->title = '伝説の社畜';
+            } elseif ($character->level >= 140) {
+                $character->title = '生けるタイムカード';
+            } elseif ($character->level >= 130) {
+                $character->title = '会社の守護神';
+            } elseif ($character->level >= 120) {
+                $character->title = '部長より会社にいる人';
+            } elseif ($character->level >= 110) {
+                $character->title = '勤怠管理神';
+            } elseif ($character->level >= 100) {
+                $character->title = '社畜エリート';
+            } elseif ($character->level >= 90) {
+                $character->title = '定時退社の伝説';
+            } elseif ($character->level >= 80) {
+                $character->title = 'コーヒー中毒';
+            } elseif ($character->level >= 70) {
+                $character->title = 'エクセルの使徒';
+            } elseif ($character->level >= 60) {
+                $character->title = '会議の生き証人';
+            } elseif ($character->level >= 50) {
+                $character->title = '有給ハンター';
+            } elseif ($character->level >= 40) {
+                $character->title = 'タイムカードマスター';
+            } elseif ($character->level >= 30) {
+                $character->title = '残業ビギナー';
+            } elseif ($character->level >= 20) {
+                $character->title = '一人前社員';
+            } elseif ($character->level >= 10) {
+                $character->title = 'コツコツワーカー';
+            } else {
+                $character->title = '新人ワーカー';
+            }
+
+            $character->save();
+
+            $workHours = floor($workMinutes / 60);
+
+            $message .= " {$workHours}時間勤務で {$addExp}EXP 獲得しました。";
+
+            if ($levelUpCount > 0) {
+                $message .= " Lv.{$character->level} にレベルアップしました！";
+            }
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 
     /**

@@ -30,9 +30,6 @@
                     <div class="exp-fill" style="--exp-width: {{ $expPercent }}%;"></div>
                 </div>
             </div>
-
-            <p>総勤務時間：{{ $character->total_work_time }}分</p>
-            <p>出勤回数：{{ $character->login_count }}回</p>
         @else
             <h2>相棒がいません</h2>
             <p>メニューの「相棒」から<br>キャラクターを選択してください。</p>

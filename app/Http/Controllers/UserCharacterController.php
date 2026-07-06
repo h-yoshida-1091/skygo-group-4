@@ -15,10 +15,6 @@ class UserCharacterController extends Controller
 
         $character = UserCharacter::where('user_id', session('userId'))->first();
 
-        if ($character) {
-            return view('character.edit', compact('character'));
-        }
-
         return view('character.select');
     }
 
@@ -48,7 +44,7 @@ class UserCharacterController extends Controller
         ]);
 
         return redirect()
-            ->route('character.index')
+            ->route('dashboard')
             ->with('success', '相棒を選択しました');
     }
 
