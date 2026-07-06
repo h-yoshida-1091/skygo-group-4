@@ -89,3 +89,14 @@ Route::post('/character/select', [UserCharacterController::class, 'select'])
 Route::put('/character/update', [UserCharacterController::class, 'update'])
     ->name('character.update');
 
+Route::post('/admin/shift/{id}/approve', [AdminController::class, 'approveShift'])
+    ->name('admin.shift.approve');
+
+Route::post('/admin/shift/{id}/reject', [AdminController::class, 'rejectShift'])
+    ->name('admin.shift.reject');
+
+Route::post('/admin/attendance/{id}/approve', [AdminController::class, 'approveAttendance'])
+    ->name('admin.attendance.approve');
+
+Route::post('/admin/attendance/{id}/reject', [AdminController::class, 'rejectAttendance'])
+    ->name('admin.attendance.reject');

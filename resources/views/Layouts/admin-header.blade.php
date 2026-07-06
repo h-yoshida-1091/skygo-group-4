@@ -12,7 +12,7 @@
 
     <a href="/admin/dashboard">📊 管理者ダッシュボード</a>
 
-    <a href="#">📋 シフト申請一覧</a>
+    <a href="#">📋 申請管理</a>
 
     <a href="/admin/users">👤 ユーザー管理</a>
 
