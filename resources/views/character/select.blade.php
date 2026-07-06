@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>相棒を選ぼう</title>
     <link rel="stylesheet" href="{{ asset('css/character.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/character.css') }}">
 </head>
 
 <body>
@@ -22,7 +21,7 @@
             <label class="character-card">
                 <input type="radio"
                     name="character_type"
-                    value="cat"
+                    value="D"
                     required
                     data-voice="{{ asset('audio/characters/きいち出勤.mp3') }}">
                 <img src="{{ asset('images/characters/D.png') }}" alt="猫">

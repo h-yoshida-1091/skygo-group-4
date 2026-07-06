@@ -48,7 +48,7 @@ class UserCharacterController extends Controller
         ]);
 
         return redirect()
-            ->route('character.index')
+            ->route('dashboard')
             ->with('success', '相棒を選択しました');
     }
 
