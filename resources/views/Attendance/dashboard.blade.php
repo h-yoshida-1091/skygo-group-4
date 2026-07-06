@@ -82,7 +82,9 @@
                             @if($attendance->clock_in)
                                 <div class="history-row"
                                      data-id="{{ $attendance->id }}"
-                                     data-date="{{ $attendance->work_date }}"
+                                     data-date="{{ \Carbon\Carbon::parse($attendance->work_date)->format('Y-m-d') }}"
+                                     data-clock-in="{{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}"
+                                     data-clock-out="{{ $attendance->clock_out ? \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') : '' }}"
                                      onclick="openModal(this)">
                                     <span>出勤</span>
                                     <span>{{ \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') }}</span>
@@ -92,7 +94,9 @@
                             @if($attendance->clock_out)
                                 <div class="history-row"
                                      data-id="{{ $attendance->id }}"
-                                     data-date="{{ $attendance->work_date }}"
+                                     data-date="{{ \Carbon\Carbon::parse($attendance->work_date)->format('Y-m-d') }}"
+                                     data-clock-in="{{ $attendance->clock_in ? \Carbon\Carbon::parse($attendance->clock_in)->format('H:i') : '' }}"
+                                     data-clock-out="{{ \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') }}"
                                      onclick="openModal(this)">
                                     <span>退勤</span>
                                     <span>{{ \Carbon\Carbon::parse($attendance->clock_out)->format('H:i') }}</span>
@@ -144,7 +148,15 @@
         const id = element.getAttribute('data-id');
         const dateStr = element.getAttribute('data-date');
 
-        document.getElementById('modalDate').innerText = dateStr;
+        const clockInVal = element.getAttribute('data-clock-in');
+        const clockOutVal = element.getAttribute('data-clock-out');
+
+        const dateParts = dateStr.split('-');
+        const formattedDate = `${dateParts[0]}年${dateParts[1]}月${dateParts[2]}日`;
+
+        document.getElementById('modalDate').innerText = formattedDate;
+        document.querySelector('input[name="requested_clock_in"]').value = clockInVal || '';
+        document.querySelector('input[name="requested_clock_out"]').value = clockOutVal || '';
         document.getElementById('editForm').action = `/attendances/${id}/request`;
         document.getElementById('editModal').classList.add('is-open');
     }
