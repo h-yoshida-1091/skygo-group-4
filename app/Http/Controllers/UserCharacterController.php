@@ -15,10 +15,6 @@ class UserCharacterController extends Controller
 
         $character = UserCharacter::where('user_id', session('userId'))->first();
 
-        if ($character) {
-            return view('character.edit', compact('character'));
-        }
-
         return view('character.select');
     }
 

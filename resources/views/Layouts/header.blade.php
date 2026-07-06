@@ -11,29 +11,29 @@
             $level = $headerCharacter->level;
 
             if ($level >= 150) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv150.png';
             } elseif ($level >= 140) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv140.png';
             } elseif ($level >= 130) {
                 $titleImage = 'Lv30.png';
             } elseif ($level >= 120) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv120.png';
             } elseif ($level >= 110) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv110.png';
             } elseif ($level >= 100) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv100.png';
             } elseif ($level >= 90) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv90.png';
             } elseif ($level >= 80) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv80.png';
             } elseif ($level >= 70) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv70.png';
             } elseif ($level >= 60) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv60.png';
             } elseif ($level >= 50) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv50.png';
             } elseif ($level >= 40) {
-                $titleImage = 'Lv30.png';
+                $titleImage = 'Lv40.png';
             } elseif ($level >= 30) {
                 $titleImage = 'Lv30.png';
             } elseif ($level >= 20) {
@@ -222,7 +222,6 @@
     <a href="{{ route('dashboard') }}">ダッシュボード</a>
     <a href="{{ route('workschedule') }}">勤務表</a>
     <a href="{{ route('shift.index') }}">シフト一覧、シフト修正</a>
-    <a href="{{ route('character.index') }}">相棒</a>
 
     <form action="{{ route('logout') }}" method="POST">
         @csrf

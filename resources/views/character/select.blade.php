@@ -18,35 +18,35 @@
 
         <div class="character-list">
 
-            <label class="character-card">
+            <label class="character-card lizard-card">
                 <input type="radio"
                     name="character_type"
-                    value="D"
+                    value="トカゲ"
                     required
                     data-voice="{{ asset('audio/characters/きいち出勤.mp3') }}">
-                <img src="{{ asset('images/characters/D.png') }}" alt="猫">
-                <h3>永山貴一</h3>
-                <p>元気いっぱい！</p>
+                <img src="{{ asset('images/characters/トカゲ.png') }}" alt="トカゲ">
+                <h3>歩くトカゲ</h3>
+                <p>لا أخشى الأرض الحارّة! إلى السماء الواسعة مع الطيور!</p>
             </label>
 
-            <label class="character-card">
+            <label class="character-card turtle-card">
                 <input type="radio"
                     name="character_type"
-                    value="bear"
+                    value="かめ"
                     data-voice="{{ asset('audio/characters/cat.mp3') }}">
-                <img src="{{ asset('images/characters/D.png') }}" alt="熊">
-                <h3>クマ</h3>
-                <p>頼れる相棒！</p>
+                <img src="{{ asset('images/characters/かめ.png') }}" alt="かめ">
+                <h3>空飛ぶ亀</h3>
+                <p>새들과 함께 드넓은 하늘로!</p>
             </label>
 
-            <label class="character-card">
+            <label class="character-card frog-card">
                 <input type="radio"
                     name="character_type"
-                    value="dog"
+                    value="カエル"
                     data-voice="{{ asset('audio/characters/cat.mp3') }}">
-                <img src="{{ asset('images/characters/D.png') }}" alt="犬">
-                <h3>イヌ</h3>
-                <p>いつも元気！</p>
+                <img src="{{ asset('images/characters/カエル.png') }}" alt="カエル">
+                <h3>泳ぐカエル</h3>
+                <p>Mit den Vögeln in den weiten Himmel!</p>
             </label>
 
         </div>

@@ -39,6 +39,27 @@ p {
     box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
+.lizard-card {
+    background-image: url("/images/characters/砂漠.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.turtle-card {
+    background-image: url("/images/characters/空.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.frog-card {
+    background-image: url("/images/characters/海.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .character-card:hover {
     transform: translateY(-8px);
     border-color: #4caf50;
@@ -53,12 +74,30 @@ p {
 
 .character-card h3 {
     margin-top: 15px;
-    color: #333;
+    color: #000000;
+    text-shadow:
+        2px 2px 0 #ffffff,
+        -2px 2px 0 #ffffff,
+        2px -2px 0 #ffffff,
+        -2px -2px 0 #ffffff,
+        0 2px 0 #ffffff,
+        0 -2px 0 #ffffff,
+        2px 0 0 #ffffff,
+        -2px 0 0 #ffffff;
 }
 
 .character-card p {
-    font-size: 14px;
-    color: #666;
+    font-size: 20px;
+    color: #000000;
+    text-shadow:
+        2px 2px 0 #ffffff,
+        -2px 2px 0 #ffffff,
+        2px -2px 0 #ffffff,
+        -2px -2px 0 #ffffff,
+        0 2px 0 #ffffff,
+        0 -2px 0 #ffffff,
+        2px 0 0 #ffffff,
+        -2px 0 0 #ffffff;
 }
 
 /* ラジオボタン非表示 */
