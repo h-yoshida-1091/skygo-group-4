@@ -16,74 +16,190 @@
 
     <div class="container">
 
-        <h1 class="page-title">申請一覧（管理者）</h1>
+        <h1 class="page-title">申請管理</h1>
 
-        <table class="table">
+        <!-- タブ -->
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="showTab('shift')">
+                シフト申請
+            </button>
 
-            <thead>
-                <tr>
-                    <th>ユーザー名</th>
-                    <th>日付</th>
-                    <th>開始時間</th>
-                    <th>終了時間</th>
-                    <th>ステータス</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
+            <button class="tab-btn" onclick="showTab('attendance')">
+                打刻修正申請
+            </button>
+        </div>
 
-            <tbody>
+        <!-- =============================
+         シフト申請
+    ============================== -->
 
-                @if(isset($requests) && count($requests) > 0)
+        <div id="shift" class="tab-content active">
 
-                @foreach($requests as $req)
-                <tr class="
-                    {{ $req->status == 'pending' ? 'pending-row' : '' }}
-                    {{ $req->status == 'approved' ? 'approved-row' : '' }}
-                    {{ $req->status == 'rejected' ? 'rejected-row' : '' }}
-                    ">
-                    <td>{{ $req->user->name ?? '未設定ユーザー' }}</td>
-                    <td>{{ $req->date ?? '-' }}</td>
-                    <td>{{ $req->start_time ?? '-' }}</td>
-                    <td>{{ $req->end_time ?? '-' }}</td>
+            <table class="table">
 
-                    <td>
-                        @if($req->status == 'pending')
-                        <span class="pending">申請中</span>
-                        @elseif($req->status == 'approved')
-                        <span class="approved">承認</span>
-                        @else
-                        <span class="rejected">差し戻し</span>
-                        @endif
-                    </td>
+                <thead>
+                    <tr>
+                        <th>申請者名</th>
+                        <th>日付</th>
+                        <th>ステータス</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
 
-                    <td class="actions">
+                <tbody>
 
-                        <form action="{{ route('admin.shifts.approve', $req->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn approve">承認</button>
-                        </form>
+                    @forelse($shiftRequests as $req)
 
-                        <form action="{{ route('admin.shifts.reject', $req->id) }}" method="POST">
-                            @csrf
-                            <input type="text" name="comment" placeholder="コメント">
-                            <button type="submit" class="btn reject">差し戻し</button>
-                        </form>
+                    <tr>
 
-                    </td>
-                </tr>
-                @endforeach
+                        <td>{{ $req->user->name ?? '未設定ユーザー' }}</td>
 
-                @else
-                <tr>
-                    <td colspan="6">申請データがありません</td>
-                </tr>
-                @endif
+                        <td>{{ $req->date }}</td>
 
-            </tbody>
+                        <td>
 
-        </table>
+                            @if($req->status=="pending")
+                            <span class="pending">申請中</span>
+                            @elseif($req->status=="approved")
+                            <span class="approved">承認</span>
+                            @else
+                            <span class="rejected">差し戻し</span>
+                            @endif
+
+                        </td>
+
+                        <td>
+
+                            <form action="{{ route('admin.shifts.approve',$req->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button class="btn approve">
+                                    承認
+                                </button>
+                            </form>
+
+                            <form action="{{ route('admin.shifts.reject',$req->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button class="btn reject">
+                                    差し戻し
+                                </button>
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="4">
+                            シフト申請はありません
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- =============================
+         打刻修正申請
+    ============================== -->
+
+        <div id="attendance" class="tab-content">
+
+            <table class="table">
+
+                <thead>
+
+                    <tr>
+                        <th>申請者名</th>
+                        <th>日付</th>
+                        <th>ステータス</th>
+                        <th>操作</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($attendanceRequests as $req)
+
+                    <tr>
+
+                        <td>{{ $req->user->name ?? '未設定ユーザー' }}</td>
+
+                        <td>{{ $req->date }}</td>
+
+                        <td>
+
+                            @if($req->status=="pending")
+                            <span class="pending">申請中</span>
+                            @elseif($req->status=="approved")
+                            <span class="approved">承認</span>
+                            @else
+                            <span class="rejected">差し戻し</span>
+                            @endif
+
+                        </td>
+
+                        <td>
+
+                            <form action="{{ route('admin.attendance.approve',$req->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button class="btn approve">
+                                    承認
+                                </button>
+                            </form>
+
+                            <form action="{{ route('admin.attendance.reject',$req->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button class="btn reject">
+                                    差し戻し
+                                </button>
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="4">
+                            打刻修正申請はありません
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
+
+    <script>
+        function showTab(tabName) {
+
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+
+            event.target.classList.add('active');
+        }
+    </script>
 
 </body>
 
