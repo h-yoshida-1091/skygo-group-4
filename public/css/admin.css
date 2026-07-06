@@ -4,107 +4,184 @@ body {
     background-color: #f0f0f0;
 }
 
-/* 全体 */
-.container {
+/* 全体レイアウト */
+.user-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 50px;
     padding: 30px;
 }
 
-/* タイトル（ユーザー画面寄せ） */
-.page-title {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
+/* 左：ユーザー一覧 */
+.user-panel {
+    flex: 1;
+}
+
+/* タイトル */
+.user-panel h2,
+.add-panel h2 {
+    font-size: 32px;
     margin-bottom: 20px;
-    color: #333;
+    color: #111;
 }
 
-/* テーブル全体 */
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border: 4px solid black;
-}
-
-/* ヘッダー（水色） */
-.admin-table thead {
-    background-color: #87ceeb;
-}
-
-.admin-table th {
-    padding: 12px;
-    border: 2px solid black;
-    font-size: 15px;
-    text-align: center;
-}
-
-/* 本体 */
-.admin-table td {
-    padding: 12px;
-    border: 2px solid black;
-    font-size: 14px;
-    text-align: center;
-    background: white;
-}
-
-/* ホバー（薄く） */
-.admin-table tbody tr:hover {
-    background-color: #f5f5f5;
-}
-
-/* ステータス（ユーザー寄せ） */
-.pending {
-    color: #ff9800;
-    font-weight: bold;
-}
-
-.approved {
-    color: #4caf50;
-    font-weight: bold;
-}
-
-.rejected {
-    color: #e53935;
-    font-weight: bold;
-}
-
-/* 操作エリア */
-.actions {
+/* 検索フォーム */
+.search-form {
     display: flex;
-    gap: 10px;
-    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.search-form input,
+.search-form select {
+    width: 220px;
+    height: 45px;
+    border: 3px solid #7ec8ee;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 16px;
+    background: #fff;
+}
+
+.search-form button {
+    width: 100px;
+    height: 45px;
+    border: none;
+    border-radius: 10px;
+    background: #7ec8ee;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.search-form button:hover {
+    background: #61b8e8;
+}
+
+/* ユーザーカード */
+.user-card {
+    background: #fff;
+    border: 3px solid #7ec8ee;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 15px;
+
+    display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
-/* ボタン（ユーザー画面寄せ） */
-.btn {
-    background: white;
-    border: 2px solid black;
-    padding: 6px 12px;
+/* 名前 */
+.user-name {
+    font-size: 18px;
     font-weight: bold;
-    cursor: pointer;
-    border-radius: 10px;
 }
 
-/* 承認ボタン */
-.btn.approve {
-    background: white;
-    border-color: black;
+/* ロール */
+.user-role {
+    font-size: 16px;
+    color: #555;
 }
 
-.btn.approve:hover {
+/* 操作ボタン */
+.user-action {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* 編集ボタン */
+.edit-btn {
+    padding: 6px 14px;
+    border: 2px solid #000;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #000;
+    background: #fff;
+}
+
+.edit-btn:hover {
     background: #e0f7fa;
 }
 
-/* 差し戻しボタン */
-.btn.reject:hover {
+/* 削除ボタン */
+.delete-btn {
+    padding: 6px 14px;
+    border: 2px solid #e53935;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    color: #e53935;
+}
+
+.delete-btn:hover {
     background: #ffe5e5;
 }
 
-/* コメント入力（ユーザー寄せ） */
-.actions input[type="text"] {
-    border: 3px solid black;
-    padding: 5px;
-    font-size: 13px;
-    width: 140px;
+/* ページネーション */
+.pagination {
+    margin-top: 20px;
+}
+
+/* 右：ユーザー追加 */
+.add-panel {
+    width: 420px;
+    background: #fff;
+    border: 4px solid #7ec8ee;
+    border-radius: 18px;
+    padding: 30px;
+}
+
+/* フォーム */
+.add-panel form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 入力 */
+.add-panel input,
+.add-panel select {
+    height: 50px;
+    border: 3px solid #7ec8ee;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 16px;
+}
+
+/* 追加ボタン */
+.add-btn {
+    height: 50px;
+    background: #7ec8ee;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background: #61b8e8;
+}
+
+/* メッセージ */
+.success {
+    background: #e0f7fa;
+    border: 2px solid #4fc3f7;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    color: #0277bd;
+}
+
+.error {
+    background: #ffe5e5;
+    border: 2px solid #e53935;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    color: #c62828;
 }

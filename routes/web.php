@@ -8,6 +8,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\WorkScheduleController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\UserCharacterController;
 
 /*トップ*/
 
@@ -23,10 +24,6 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 
-
-// ダッシュボード
-Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
-
 // 勤怠
 Route::post('/attendances/clock-in', [AttendanceController::class, 'clockIn']);
 Route::post('/attendances/clock-out', [AttendanceController::class, 'clockOut']);
@@ -41,7 +38,7 @@ Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
 
 // ダッシュボード表示
 Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
-Route::post('/dashboard/{attendance_id}/request', [AttendanceController::class, 'storeRequest']);
+Route::post('/attendances/{attendanceId}/request', [AttendanceController::class, 'storeRequest']);
 
 // 勤務表
 Route::get('/workschedule', [WorkScheduleController::class, 'index'])->name('workschedule');
@@ -56,21 +53,50 @@ Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
     ->name('admin.dashboard');
 
 //シフト承認
-Route::post('/shifts/{id}/approve', [AdminController::class, 'approve'])
+Route::post('/admin/shifts/{id}/approve', [AdminController::class, 'approve'])
     ->name('admin.shifts.approve');
 
-Route::post('/shifts/{id}/reject', [AdminController::class, 'reject'])
+Route::post('/admin/shifts/{id}/reject', [AdminController::class, 'reject'])
     ->name('admin.shifts.reject');
 
 // ユーザー管理
 Route::get('/admin/users', [AdminUserController::class, 'index'])
     ->name('admin.users.index');
 
-Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])
+Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])
     ->name('admin.users.destroy');
 
-Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])
+Route::delete('/admin/users/{id}/force', [AdminUserController::class, 'forceDelete'])
+    ->name('admin.users.forceDelete');
+
+Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'edit'])
     ->name('admin.users.edit');
 
-Route::put('/users/{id}', [AdminUserController::class, 'update'])
+Route::put('/admin/users/{id}', [AdminUserController::class, 'update'])
     ->name('admin.users.update');
+
+
+Route::post('/admin/users', [AdminUserController::class, 'store'])
+    ->name('admin.users.store');
+
+//　相棒管理
+Route::get('/character', [UserCharacterController::class, 'index'])
+    ->name('character.index');
+
+Route::post('/character/select', [UserCharacterController::class, 'select'])
+    ->name('character.select');
+
+Route::put('/character/update', [UserCharacterController::class, 'update'])
+    ->name('character.update');
+
+Route::post('/admin/shift/{id}/approve', [AdminController::class, 'approveShift'])
+    ->name('admin.shift.approve');
+
+Route::post('/admin/shift/{id}/reject', [AdminController::class, 'rejectShift'])
+    ->name('admin.shift.reject');
+
+Route::post('/admin/attendance/{id}/approve', [AdminController::class, 'approveAttendance'])
+    ->name('admin.attendance.approve');
+
+Route::post('/admin/attendance/{id}/reject', [AdminController::class, 'rejectAttendance'])
+    ->name('admin.attendance.reject');
