@@ -10,9 +10,7 @@
 
 <nav id="menu" class="menu">
 
-    <a href="/admin/dashboard">📊 管理者ダッシュボード</a>
-
-    <a href="#">📋 申請管理</a>
+    <a href="/admin/dashboard">📋 申請管理</a>
 
     <a href="/admin/users">👤 ユーザー管理</a>
 

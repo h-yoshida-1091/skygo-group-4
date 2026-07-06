@@ -2,9 +2,48 @@
     use App\Models\UserCharacter;
 
     $headerCharacter = null;
+    $titleImage = null;
 
     if (session()->has('userId')) {
         $headerCharacter = UserCharacter::where('user_id', session('userId'))->first();
+
+        if ($headerCharacter) {
+            $level = $headerCharacter->level;
+
+            if ($level >= 150) {
+                $titleImage = 'Lv150.png';
+            } elseif ($level >= 140) {
+                $titleImage = 'Lv140.png';
+            } elseif ($level >= 130) {
+                $titleImage = 'Lv30.png';
+            } elseif ($level >= 120) {
+                $titleImage = 'Lv120.png';
+            } elseif ($level >= 110) {
+                $titleImage = 'Lv110.png';
+            } elseif ($level >= 100) {
+                $titleImage = 'Lv100.png';
+            } elseif ($level >= 90) {
+                $titleImage = 'Lv90.png';
+            } elseif ($level >= 80) {
+                $titleImage = 'Lv80.png';
+            } elseif ($level >= 70) {
+                $titleImage = 'Lv70.png';
+            } elseif ($level >= 60) {
+                $titleImage = 'Lv60.png';
+            } elseif ($level >= 50) {
+                $titleImage = 'Lv50.png';
+            } elseif ($level >= 40) {
+                $titleImage = 'Lv40.png';
+            } elseif ($level >= 30) {
+                $titleImage = 'Lv30.png';
+            } elseif ($level >= 20) {
+                $titleImage = 'Lv20.png';
+            } elseif ($level >= 10) {
+                $titleImage = 'Lv10.png';
+            } else {
+                $titleImage = 'Lv1.png';
+            }
+        }
     }
 @endphp
 
@@ -19,7 +58,8 @@
             height: 65px;
             background: #1976d2;
             color: #fff;
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             padding: 0 28px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
@@ -30,63 +70,50 @@
             z-index: 1000;
         }
 
+        .app-header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            justify-self: start;
+        }
+
         .app-menu-btn {
             border: none;
             background: rgba(255, 255, 255, .18);
             color: #fff;
             font-size: 28px;
-            width: 58px;
-            height: 58px;
+            width: 50px;
+            height: 50px;
             border-radius: 14px;
             cursor: pointer;
-            margin-right: 22px;
         }
 
         .app-logo {
             font-size: 28px;
             margin: 0;
             font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .app-title-badge {
+            justify-self: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-title-badge img {
+            height: 52px;
+            max-width: 430px;
+            object-fit: contain;
+            display: block;
         }
 
         .app-user {
-            margin-left: 20px;
-            font-size: 15px;
+            justify-self: end;
+            font-size: 16px;
             font-weight: bold;
-            opacity: .95;
-        }
-
-        .app-character {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, .18);
-            padding: 6px 14px;
-            border-radius: 16px;
-        }
-
-        .app-character img {
-            width: 42px;
-            height: 42px;
-            object-fit: contain;
-            border-radius: 50%;
-            background: #fff;
-        }
-
-        .app-character-info {
-            display: flex;
-            flex-direction: column;
-            font-size: 13px;
-            line-height: 1.3;
-        }
-
-        .app-character-name {
-            font-weight: bold;
-        }
-
-        .app-character-title {
-            font-size: 12px;
-            opacity: .9;
+            white-space: nowrap;
         }
 
         .app-overlay {
@@ -166,33 +193,25 @@
 </head>
 
 <header class="app-header">
-    <button id="menuBtn" class="app-menu-btn" type="button">
-        ☰
-    </button>
+    <div class="app-header-left">
+        <button id="menuBtn" class="app-menu-btn" type="button">
+            ☰
+        </button>
 
-    <h2 class="app-logo">勤怠</h2>
+        <h2 class="app-logo">勤怠</h2>
+    </div>
 
-    @if(session()->has('userName'))
-        <div class="app-user">
+    <div class="app-title-badge">
+        @if($titleImage)
+            <img src="{{ asset('images/titles/' . $titleImage) }}" alt="称号">
+        @endif
+    </div>
+
+    <div class="app-user">
+        @if(session()->has('userName'))
             {{ session('userName') }} さん
-        </div>
-    @endif
-
-    @if($headerCharacter)
-        <div class="app-character">
-            <img src="{{ asset('images/characters/' . $headerCharacter->image) }}" alt="相棒">
-
-            <div class="app-character-info">
-                <span class="app-character-name">
-                    {{ $headerCharacter->nickname ?? $headerCharacter->character_type }}
-                    Lv.{{ $headerCharacter->level }}
-                </span>
-                <span class="app-character-title">
-                    {{ $headerCharacter->title }}
-                </span>
-            </div>
-        </div>
-    @endif
+        @endif
+    </div>
 </header>
 
 <div id="overlay" class="app-overlay"></div>
@@ -203,7 +222,6 @@
     <a href="{{ route('dashboard') }}">ダッシュボード</a>
     <a href="{{ route('workschedule') }}">勤務表</a>
     <a href="{{ route('shift.index') }}">シフト一覧、シフト修正</a>
-    <a href="{{ route('character.index') }}">相棒</a>
 
     <form action="{{ route('logout') }}" method="POST">
         @csrf
