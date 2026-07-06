@@ -6,6 +6,29 @@
     <title>シフト申請</title>
     <link rel="stylesheet" href="{{ asset('css/shift.css') }}">
     <link rel="icon" type="image/png" href="{{ asset('images/小林大地首.png') }}">
+    <style>
+        /* ポップアップ（dialog）の簡易スタイル（必要に応じてshift.cssに移動してください） */
+        dialog {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+        }
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .close-dialog-btn {
+            margin-top: 15px;
+            display: block;
+            width: 100%;
+        }
+        .shift-pattern-btn.selected {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -25,6 +48,52 @@
     <p>{{ session('success') }}</p>
     @endif
 
+    <!-- シフトパターンを選択するポップアップを開くトリガーボタン -->
+    <div class="select-card">
+        <button type="button" id="openPatternModal" class="edit-button">シフトパターンを選択</button>
+        <div id="selectedPatternDisplay" style="margin-top: 10px; font-weight: bold;">
+            選択中: 未選択
+        </div>
+    </div>
+
+    <!-- ポップアップ本体（dialogタグ） -->
+    <dialog id="patternDialog">
+        <h2>シフトパターンを選択</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button type="button" class="shift-pattern-btn" data-type="出社" data-start="09:00" data-end="17:30">出社 09:00〜17:30</button>
+            <button type="button" class="shift-pattern-btn" data-type="リモート" data-start="09:00" data-end="17:30">リモート 09:00〜17:30</button>
+            <button type="button" class="shift-pattern-btn" data-type="出社" data-start="08:00" data-end="17:00">出社 08:00〜17:00</button>
+            <button type="button" class="shift-pattern-btn" data-type="リモート" data-start="10:00" data-end="19:00">リモート 10:00〜19:00</button>
+        </div>
+        <button type="button" id="closePatternModal" class="close-dialog-btn">閉じる</button>
+    </dialog>
+
+    <form id="shiftForm" method="POST" action="{{ route('shift.store') }}">
+        @csrf
+
+        <input type="hidden" name="year" value="{{ $year }}">
+        <input type="hidden" name="month" value="{{ $month }}">
+        <input type="hidden" name="shifts_json" id="shiftsJson">
+
+        @if ($shiftStatusText === '変更申請中')
+        <button type="button" id="mainShiftButton" disabled>
+            変更申請中
+        </button>
+        @else
+        <button
+            class="edit-button"
+            type="{{ $shiftStatusText === '未提出' ? 'submit' : 'button' }}"
+            id="mainShiftButton"
+            data-status="{{ $shiftStatusText }}">
+            @if ($shiftStatusText === '未提出')
+            シフトを提出
+            @else
+            編集する
+            @endif
+        </button>
+        @endif
+    </form>
+
     <table>
         <tr>
             <th class="sun">日</th>
@@ -33,7 +102,7 @@
             <th>水</th>
             <th>木</th>
             <th>金</th>
-            <th class="sat">土</th>
+            <th>土</th>
         </tr>
 
         @php
@@ -45,7 +114,7 @@
         $displayShifts = $pendingRequests->isNotEmpty() ? $pendingRequests : $shifts;
 
         $shiftMap = $displayShifts->keyBy(function ($shift) {
-        return $shift->work_date->format('Y-m-d');
+            return $shift->work_date->format('Y-m-d');
         });
         @endphp
 
@@ -69,7 +138,7 @@
                         @endif
                     ">
                         {{ $currentDay->day }}
-                    </strong>
+                    </strong> 
 
                     <div
                         class="shift-text
@@ -105,126 +174,98 @@
 
     <hr>
 
-    <div class="select-card">
-        <h2>シフトを選択</h2>
-        <button type="button" class="work-type-btn" data-type="出社">出社</button>
-        <button type="button" class="work-type-btn" data-type="リモート">リモート</button>
-    </div>
-
-    <div class="select-card">
-        <h2>時間を選択</h2>
-        <button type="button" class="time-btn" data-start="09:00" data-end="17:30">09:00〜17:30</button>
-        <button type="button" class="time-btn" data-start="08:00" data-end="17:00">08:00〜17:00</button>
-        <button type="button" class="time-btn" data-start="10:00" data-end="19:00">10:00〜19:00</button>
-    </div>
-
-    <form id="shiftForm" method="POST" action="{{ route('shift.store') }}">
-        @csrf
-
-        <input type="hidden" name="year" value="{{ $year }}">
-        <input type="hidden" name="month" value="{{ $month }}">
-        <input type="hidden" name="shifts_json" id="shiftsJson">
-
-        @if ($shiftStatusText === '変更申請中')
-        <button type="button" id="mainShiftButton" disabled>
-            変更申請中
-        </button>
-        @else
-        <button
-            class="edit-button"
-            type="{{ $shiftStatusText === '未提出' ? 'submit' : 'button' }}"
-            id="mainShiftButton"
-            data-status="{{ $shiftStatusText }}">
-            @if ($shiftStatusText === '未提出')
-            シフトを提出
-            @else
-            編集する
-            @endif
-        </button>
-        @endif
-    </form>
-
     <script>
-        let selectedType = null;
-        let selectedStart = null;
-        let selectedEnd = null;
-        let isEditMode = "{{ $shiftStatusText }}" === "未提出";
-
-        document.querySelectorAll('.work-type-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                selectedType = this.dataset.type;
-
-                document.querySelectorAll('.work-type-btn').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-
-                this.classList.add('selected');
-            });
-        });
-
-        document.querySelectorAll('.time-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                selectedStart = this.dataset.start;
-                selectedEnd = this.dataset.end;
-
-                document.querySelectorAll('.time-btn').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-
-                this.classList.add('selected');
-            });
-        });
-
-        document.querySelectorAll('.calendar-day').forEach(day => {
-    day.addEventListener('click', function() {
-        if (!isEditMode) {
-            return;
-        }
-
-        const shiftText = this.querySelector('.shift-text');
-
-        if (!shiftText) {
-            return;
-        }
-
-        if (shiftText.innerHTML.trim() !== '') {
-            shiftText.innerHTML = '';
-            shiftText.removeAttribute('data-type');
-            shiftText.removeAttribute('data-start');
-            shiftText.removeAttribute('data-end');
-            shiftText.classList.remove('has-shift', 'office-shift', 'remote-shift');
-            return;
-        }
-
-        if (!selectedType || !selectedStart || !selectedEnd) {
-            alert('出社・リモートと時間を選択してください');
-            return;
-        }
-
-        shiftText.dataset.type = selectedType;
-        shiftText.dataset.start = selectedStart;
-        shiftText.dataset.end = selectedEnd;
-
-        shiftText.classList.add('has-shift');
-
-        if (selectedType === 'リモート') {
-            shiftText.classList.add('remote-shift');
-            shiftText.classList.remove('office-shift');
-        } else {
-            shiftText.classList.add('office-shift');
-            shiftText.classList.remove('remote-shift');
-        }
-
-        shiftText.innerHTML = `
-            ${selectedType}<br>
-            ${selectedStart}〜${selectedEnd}
-        `;
-    });
-});
-
-
+        // 状態管理変数の初期化
         const mainShiftButton = document.getElementById('mainShiftButton');
+        let isEditMode = (mainShiftButton && mainShiftButton.dataset.status === '未提出') ? true : false;
+        let selectedPattern = null; 
 
+        // モーダル関連の要素取得
+        const patternDialog = document.getElementById('patternDialog');
+        const openPatternModal = document.getElementById('openPatternModal');
+        const closePatternModal = document.getElementById('closePatternModal');
+        const selectedPatternDisplay = document.getElementById('selectedPatternDisplay');
+
+        // モーダルを開く・閉じる処理
+        if (openPatternModal) {
+            openPatternModal.addEventListener('click', () => patternDialog.showModal());
+        }
+        if (closePatternModal) {
+            closePatternModal.addEventListener('click', () => patternDialog.close());
+        }
+
+        // シフトパターンの選択処理
+        document.querySelectorAll('.shift-pattern-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                selectedPattern = {
+                    type: this.dataset.type,
+                    start: this.dataset.start,
+                    end: this.dataset.end
+                };
+
+                // アクティブクラスの切り替え
+                document.querySelectorAll('.shift-pattern-btn').forEach(btn => btn.classList.remove('selected'));
+                this.classList.add('selected');
+
+                // 選択中のパターンを画面に表示
+                selectedPatternDisplay.textContent = `選択中: ${selectedPattern.type} ${selectedPattern.start}〜${selectedPattern.end}`;
+
+                // パターンを選んだら自動でポップアップを閉じる
+                patternDialog.close();
+            });
+        });
+
+        // カレンダー押下時の反映ロジック
+        document.querySelectorAll('.calendar-day').forEach(day => {
+            day.addEventListener('click', function() {
+                if (!isEditMode) {
+                    return;
+                }
+
+                const shiftText = this.querySelector('.shift-text');
+                if (!shiftText) {
+                    return;
+                }
+
+                // すでにシフトが入っている場合は削除処理
+                if (shiftText.innerHTML.trim() !== '') {
+                    shiftText.innerHTML = '';
+                    shiftText.removeAttribute('data-type');
+                    shiftText.removeAttribute('data-start');
+                    shiftText.removeAttribute('data-end');
+                    shiftText.classList.remove('has-shift', 'office-shift', 'remote-shift');
+                    return;
+                }
+
+                // ポップアップで選択されたパターンのチェック
+                if (!selectedPattern) {
+                    alert('シフトパターンを選択してください');
+                    return;
+                }
+
+                // 選択されたパターンを反映
+                shiftText.dataset.type = selectedPattern.type;
+                shiftText.dataset.start = selectedPattern.start;
+                shiftText.dataset.end = selectedPattern.end;
+
+                shiftText.classList.add('has-shift');
+
+                if (selectedPattern.type === 'リモート') {
+                    shiftText.classList.add('remote-shift');
+                    shiftText.classList.remove('office-shift');
+                } else {
+                    shiftText.classList.add('office-shift');
+                    shiftText.classList.remove('remote-shift');
+                }
+
+                shiftText.innerHTML = `
+                    ${selectedPattern.type}<br>
+                    ${selectedPattern.start}〜${selectedPattern.end}
+                `;
+            });
+        });
+
+        // 編集ボタン・提出ボタンの切り替え処理
         if (mainShiftButton && !mainShiftButton.disabled) {
             mainShiftButton.addEventListener('click', function(event) {
                 if (!isEditMode && this.dataset.status !== '未提出') {
@@ -243,6 +284,7 @@
             });
         }
 
+        // フォーム送信時の処理
         document.getElementById('shiftForm').addEventListener('submit', function(event) {
             const shifts = [];
             let hasWeekendShift = false;
@@ -294,7 +336,5 @@
             document.getElementById('shiftsJson').value = JSON.stringify(shifts);
         });
     </script>
-
 </body>
-
 </html>
