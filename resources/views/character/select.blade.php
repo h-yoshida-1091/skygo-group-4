@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>相棒を選ぼう</title>
     <link rel="stylesheet" href="{{ asset('css/character.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/小林大地首.png') }}">
 </head>
 
 <body>
