@@ -11,7 +11,18 @@
 
 <div class="dashboard-container">
 
-    <section class="character-panel">
+    <section class="character-panel
+        @if($character)
+            @if($character->character_type === 'トカゲ')
+                lizard-panel
+            @elseif($character->character_type === 'かめ')
+                turtle-panel
+            @elseif($character->character_type === 'カエル')
+                frog-panel
+            @endif
+        @endif
+    ">
+
         @if($character)
             <img class="character-image" src="{{ asset('images/characters/' . $character->image) }}" alt="相棒">
 

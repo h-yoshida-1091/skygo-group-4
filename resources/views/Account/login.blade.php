@@ -13,15 +13,13 @@
 
     <div class="login-page">
 
-        <div class="word-background" id="wordBackground"></div>
-
         <div class="login-card">
             <h1>ログイン</h1>
 
             @if ($errors->any())
-            <p class="error-message">
-                {{ $errors->first() }}
-            </p>
+                <p class="error-message">
+                    {{ $errors->first() }}
+                </p>
             @endif
 
             <form action="/login" method="POST">
@@ -44,90 +42,6 @@
         </div>
 
     </div>
-
-    <script>
-        const words = [
-            "OMG", "え？", "牛乳", "定時", "ミンティア", "胸筋",
-            "総務部", "ダンベル", "退勤", "ごしごし",
-            "腕立て", "在宅", "休み", "お先に失礼します",
-            "もちもち", "コロッケ", "プロテイン", "鍋"
-        ];
-
-        // Fisher-Yatesシャッフル
-        const shuffledWords = [...words];
-
-        for (let i = shuffledWords.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]];
-        }
-
-        const background = document.getElementById("wordBackground");
-        const placedWords = [];
-
-        // 単語数と同じ数だけ表示（重複なし）
-        const wordCount = shuffledWords.length;
-
-        function isOverlapping(newRect) {
-            return placedWords.some(rect => {
-                return !(
-                    newRect.right < rect.left ||
-                    newRect.left > rect.right ||
-                    newRect.bottom < rect.top ||
-                    newRect.top > rect.bottom
-                );
-            });
-        }
-
-        for (let i = 0; i < wordCount; i++) {
-
-            const word = document.createElement("span");
-            word.className = "floating-word";
-            word.textContent = shuffledWords[i];
-
-            const fontSize = 30 + Math.random() * 10;
-            word.style.fontSize = fontSize + "px";
-
-            background.appendChild(word);
-
-            let placed = false;
-
-            for (let tryCount = 0; tryCount < 100; tryCount++) {
-
-                const left = Math.random() * 85;
-                const top = Math.random() * 85;
-
-                word.style.left = left + "vw";
-                word.style.top = top + "vh";
-
-                const rect = word.getBoundingClientRect();
-
-                const newRect = {
-                    left: rect.left - 30,
-                    right: rect.right + 30,
-                    top: rect.top - 20,
-                    bottom: rect.bottom + 20
-                };
-
-                if (!isOverlapping(newRect)) {
-                    placedWords.push(newRect);
-                    placed = true;
-                    break;
-                }
-            }
-
-            if (!placed) {
-                word.remove();
-                continue;
-            }
-
-            word.style.animationDuration = (14 + Math.random() * 14) + "s";
-            word.style.animationDelay = (Math.random() * -10) + "s";
-
-            word.style.setProperty("--move-x", (Math.random() * 160 - 80) + "px");
-            word.style.setProperty("--move-y", (Math.random() * 160 - 80) + "px");
-            word.style.setProperty("--rotate", (Math.random() * 20 - 10) + "deg");
-        }
-    </script>
 
 </body>
 
