@@ -129,7 +129,7 @@
 
                 <table class="calendar">
                     <thead>
-                        <tr>
+                        <tr class="calendar-header">
                             <th>日</th>
                             <th>月</th>
                             <th>火</th>
