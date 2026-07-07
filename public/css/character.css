@@ -36,7 +36,7 @@ p {
     padding: 20px;
     cursor: pointer;
     transition: 0.3s;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
 .lizard-card {
@@ -63,7 +63,7 @@ p {
 .character-card:hover {
     transform: translateY(-8px);
     border-color: #4caf50;
-    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
 }
 
 .character-card img {
@@ -137,4 +137,17 @@ button {
 button:hover {
     background: #43a047;
     transform: scale(1.05);
+}
+
+.page-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.page-title img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
 }

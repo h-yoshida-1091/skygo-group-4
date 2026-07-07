@@ -10,8 +10,11 @@
 
 <body>
     <!-- @include('layouts.header') -->
-    <h1>相棒を選ぼう！</h1>
-
+    <h1 class="page-title">
+        <img src="{{ asset('images/小林博士1.png') }}" alt="左画像">
+        相棒を選ぼう
+        <img src="{{ asset('images/小林博士2.png') }}" alt="右画像">
+    </h1>
     <p>一緒に社畜になる相棒を選択してください。</p>
 
     <form action="{{ route('character.select') }}" method="POST">
