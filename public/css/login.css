@@ -6,7 +6,6 @@ body {
     margin: 0;
     min-height: 100vh;
     font-family: "Yu Gothic", "Meiryo", sans-serif;
-    background: #0f172a;
     overflow: hidden;
 }
 
@@ -17,60 +16,20 @@ body {
     align-items: center;
     position: relative;
     padding: 24px;
+
+    background-image: url("../images/login背景.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-/* 背景の流れる文字 */
-.word-background {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    z-index: 0;
-}
-
-.word-background {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    z-index: 0;
-}
-
-.floating-word {
+/* 背景を少し暗くしてカードを見やすくする */
+.login-page::before {
+    content: "";
     position: absolute;
-    color: rgba(255, 255, 255, 0.22);
-    font-weight: bold;
-    white-space: nowrap;
-    user-select: none;
-    animation: float-word linear infinite alternate;
-}
-
-@keyframes float-word {
-    from {
-        transform: translate(0, 0) rotate(0deg);
-    }
-
-    to {
-        transform: translate(var(--move-x), var(--move-y)) rotate(var(--rotate));
-    }
-}
-
-@keyframes scroll-left {
-    from {
-        transform: translateX(100vw);
-    }
-
-    to {
-        transform: translateX(-100%);
-    }
-}
-
-@keyframes scroll-right {
-    from {
-        transform: translateX(-100%);
-    }
-
-    to {
-        transform: translateX(100vw);
-    }
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 0;
 }
 
 /* ログインカード */
