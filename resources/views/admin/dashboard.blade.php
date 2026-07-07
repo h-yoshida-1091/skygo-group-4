@@ -12,238 +12,322 @@
 
 <body>
 
-    @include('Layouts.admin-header')
+@include('Layouts.admin-header')
 
-    <div class="container">
+<div class="container">
 
-        <h1 class="page-title">申請管理</h1>
+    <h1 class="page-title">申請管理</h1>
 
-        <!-- タブ -->
-        <div class="tab-menu">
-            <button class="tab-btn active" onclick="showTab('shift')">
-                シフト申請
-            </button>
+    @if(session('success'))
+        <p style="color: green; font-weight: bold;">
+            {{ session('success') }}
+        </p>
+    @endif
 
-            <button class="tab-btn" onclick="showTab('attendance')">
-                打刻修正申請
-            </button>
-        </div>
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="showTab('shift', event)">
+            シフト申請
+        </button>
 
-        <!--シフト申請-->
+        <button class="tab-btn" onclick="showTab('attendance', event)">
+            打刻修正申請
+        </button>
+    </div>
 
-        <div id="shift" class="tab-content active">
+    <div id="shift" class="tab-content active">
 
-            <table class="table">
-                <thead>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>申請者名</th>
+                    <th>対象月</th>
+                    <th>提出日</th>
+                    <th>申請件数</th>
+                    <th>ステータス</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @forelse($monthlyShiftRequests as $key => $requests)
+                    @php
+                        $first = $requests->first();
+                        $latest = $requests->sortByDesc('submitted_at')->first();
+                        $user = $first->user;
+                        $year = \Carbon\Carbon::parse($first->work_date)->year;
+                        $month = \Carbon\Carbon::parse($first->work_date)->month;
+                        $submittedAt = $latest->submitted_at ?? $latest->created_at;
+                    @endphp
+
                     <tr>
-                        <th>申請者名</th>
-                        <th>申請日付</th>
-                        <th>シフト日付</th>
-                        <th>出社形態</th>
-                        <th>ステータス</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
+                        <td>{{ $user->name ?? '未設定ユーザー' }}</td>
+                        <td>{{ $year }}年{{ $month }}月分</td>
+                        <td>{{ \Carbon\Carbon::parse($submittedAt)->format('Y-m-d H:i') }}</td>
+                        <td>{{ $requests->count() }}件</td>
+                        <td><span class="pending">申請中</span></td>
 
-                <tbody>
-                    @forelse($shiftRequests as $req)
-                    <tr>
-
-                        <!-- 申請者名 -->
-                        <td>{{ $req->user->name ?? '未設定ユーザー' }}</td>
-
-                        <!-- 申請日付 -->
                         <td>
-                            {{ optional($req->submitted_at)->format('Y-m-d') 
-                    ?? $req->created_at->format('Y-m-d') }}
-                        </td>
-
-                        <!-- シフト日付 -->
-                        <td>{{ \Carbon\Carbon::parse($req->work_date)->format('Y-m-d') }}</td>
-
-                        <!-- 出社形態 -->
-                        <td>
-                            @if($req->remote)
-                            リモート
-                            @else
-                            出社
-                            @endif
-                        </td>
-
-                        <!-- ステータス -->
-                        <td>
-                            @if($req->status === 'pending')
-                            <span class="pending">申請中</span>
-                            @elseif($req->status === 'approved')
-                            <span class="approved">承認</span>
-                            @else
-                            <span class="rejected">差し戻し</span>
-                            @endif
-                        </td>
-
-                        <!-- 操作 -->
-                        <td>
-                            @if($req->status === 'pending')
-
-                            <!-- 承認 -->
-                            <form action="{{ route('admin.shifts.approve', $req->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button class="btn approve">承認</button>
-                            </form>
-
-                            <!-- 差し戻し -->
-                            <button type="button" class="btn reject" onclick="openRejectModal('{{ $req->id }}')">
-                                差し戻し
+                            <button
+                                type="button"
+                                class="btn approve"
+                                onclick="openCalendarModal('{{ $key }}')">
+                                詳細を見る
                             </button>
 
-                            @elseif($req->status === 'approved')
+                            <form action="{{ route('admin.shifts.month.approve') }}" method="POST" style="display:inline;">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{ $first->user_id }}">
+                                <input type="hidden" name="year" value="{{ $year }}">
+                                <input type="hidden" name="month" value="{{ $month }}">
 
-                            <span style="color:green; font-weight:bold;">承認済み</span>
+                                <button class="btn approve">
+                                    承認
+                                </button>
+                            </form>
 
-                            @elseif($req->status === 'rejected')
-
-                            <span style="color:red; font-weight:bold;">差し戻し済み</span>
-
-                            @endif
+                            <button
+                                type="button"
+                                class="btn reject"
+                                onclick="openMonthRejectModal('{{ $first->user_id }}', '{{ $year }}', '{{ $month }}')">
+                                差し戻し
+                            </button>
                         </td>
-
                     </tr>
-                    @empty
+                @empty
                     <tr>
                         <td colspan="6">シフト申請はありません</td>
                     </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                @endforelse
+            </tbody>
+        </table>
 
+    </div>
+
+    @foreach($monthlyShiftRequests as $key => $requests)
+        @php
+            $first = $requests->first();
+            $year = \Carbon\Carbon::parse($first->work_date)->year;
+            $month = \Carbon\Carbon::parse($first->work_date)->month;
+
+            $firstDay = \Carbon\Carbon::create($year, $month, 1);
+            $startDay = $firstDay->copy()->startOfWeek(\Carbon\Carbon::SUNDAY);
+            $endDay = $firstDay->copy()->endOfMonth()->endOfWeek(\Carbon\Carbon::SATURDAY);
+            $currentDay = $startDay->copy();
+
+            $shiftMap = $requests->keyBy(function ($req) {
+                return \Carbon\Carbon::parse($req->work_date)->format('Y-m-d');
+            });
+        @endphp
+
+        <div id="calendarModal-{{ $key }}" class="calendar-modal">
+            <div class="calendar-modal-box">
+
+                <h2>
+                    {{ $first->user->name ?? '未設定ユーザー' }}さん
+                    {{ $year }}年{{ $month }}月分シフト申請
+                </h2>
+
+                <table class="calendar">
+                    <thead>
+                        <tr>
+                            <th>日</th>
+                            <th>月</th>
+                            <th>火</th>
+                            <th>水</th>
+                            <th>木</th>
+                            <th>金</th>
+                            <th>土</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @while($currentDay <= $endDay)
+                            <tr>
+                                @for($i = 0; $i < 7; $i++)
+                                    @php
+                                        $dateKey = $currentDay->format('Y-m-d');
+                                        $req = $shiftMap->get($dateKey);
+                                    @endphp
+
+                                    <td>
+                                        @if($currentDay->month == $month)
+                                            <strong>{{ $currentDay->day }}</strong>
+
+                                            @if($req)
+                                                @php
+                                                    $submittedAt = $req->submitted_at ?? $req->created_at;
+                                                @endphp
+
+                                                <div class="shift-box">
+                                                    <div>{{ $req->remote ? 'リモート' : '出社' }}</div>
+
+                                                    <div>
+                                                        {{ \Carbon\Carbon::parse($req->start_time)->format('H:i') }}
+                                                        〜
+                                                        {{ \Carbon\Carbon::parse($req->end_time)->format('H:i') }}
+                                                    </div>
+
+                                                    <div>
+                                                        {{ $req->request_type === 'change' ? '変更申請' : '申請' }}
+                                                    </div>
+
+                                                    <div>
+                                                        提出日：
+                                                        {{ \Carbon\Carbon::parse($submittedAt)->format('m/d H:i') }}
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="no-shift">申請なし</div>
+                                            @endif
+                                        @endif
+                                    </td>
+
+                                    @php
+                                        $currentDay->addDay();
+                                    @endphp
+                                @endfor
+                            </tr>
+                        @endwhile
+                    </tbody>
+                </table>
+
+                <div class="modal-actions">
+                    <form action="{{ route('admin.shifts.month.approve') }}" method="POST" style="display:inline;">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ $first->user_id }}">
+                        <input type="hidden" name="year" value="{{ $year }}">
+                        <input type="hidden" name="month" value="{{ $month }}">
+
+                        <button class="btn approve">
+                            この月を承認
+                        </button>
+                    </form>
+
+                    <button
+                        type="button"
+                        class="btn reject"
+                        onclick="openMonthRejectModal('{{ $first->user_id }}', '{{ $year }}', '{{ $month }}')">
+                        この月を差し戻し
+                    </button>
+
+                    <button type="button" class="btn-close" onclick="closeCalendarModal('{{ $key }}')">
+                        閉じる
+                    </button>
+                </div>
+
+            </div>
         </div>
+    @endforeach
 
+    <div id="attendance" class="tab-content">
 
-        <!--打刻修正申請-->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>申請者名</th>
+                    <th>日付</th>
+                    <th>ステータス</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
 
-        <div id="attendance" class="tab-content">
-
-            <table class="table">
-
-                <thead>
-
+            <tbody>
+                @forelse($attendanceRequests as $req)
                     <tr>
-                        <th>申請者名</th>
-                        <th>日付</th>
-                        <th>ステータス</th>
-                        <th>操作</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($attendanceRequests as $req)
-
-                    <tr>
-
                         <td>{{ $req->user->name ?? '未設定ユーザー' }}</td>
 
                         <td>{{ $req->date }}</td>
 
                         <td>
-
-                            @if($req->status=="pending")
-                            <span class="pending">申請中</span>
-                            @elseif($req->status=="approved")
-                            <span class="approved">承認</span>
+                            @if($req->status === 'pending')
+                                <span class="pending">申請中</span>
+                            @elseif($req->status === 'approved')
+                                <span class="approved">承認</span>
                             @else
-                            <span class="rejected">差し戻し</span>
+                                <span class="rejected">差し戻し</span>
                             @endif
-
                         </td>
 
                         <td>
-
-                            <form action="{{ route('admin.attendance.approve', $req->id) }}" method="POST">
+                        
+                            <form action="{{ route('admin.attendance.approve', $req->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <button class="btn approve">承認</button>
                             </form>
 
-                            <form action="{{ route('admin.attendance.reject', $req->id) }}" method="POST">
+                            <form action="{{ route('admin.attendance.reject', $req->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <button class="btn reject">差し戻し</button>
                             </form>
-
                         </td>
-
                     </tr>
-
-                    @empty
-
+                @empty
                     <tr>
-                        <td colspan="4">
-                            打刻修正申請はありません
-                        </td>
+                        <td colspan="4">打刻修正申請はありません</td>
                     </tr>
-
-                    @endforelse
-
-                </tbody>
-
-            </table>
-
-        </div>
+                @endforelse
+            </tbody>
+        </table>
 
     </div>
 
-    <!-- 差し戻しモーダル -->
-    <div id="rejectModal" class="reject-modal">
+</div>
 
-        <div class="reject-modal-box">
+<div id="monthRejectModal" class="reject-modal" style="display:none;">
+    <div class="reject-modal-box">
 
-            <form id="rejectForm" method="POST">
-                @csrf
+        <form action="{{ route('admin.shifts.month.reject') }}" method="POST">
+            @csrf
 
-                <textarea name="comment" placeholder="コメント" required></textarea>
+            <input type="hidden" name="user_id" id="monthRejectUserId">
+            <input type="hidden" name="year" id="monthRejectYear">
+            <input type="hidden" name="month" id="monthRejectMonth">
 
-                <div class="reject-modal-buttons">
-                    <button type="submit" class="btn-submit">送信</button>
-                    <button type="button" class="btn-close" onclick="closeRejectModal()">閉じる</button>
-                </div>
+            <textarea name="comment" placeholder="差し戻しコメント" required></textarea>
 
-            </form>
-
-        </div>
+            <div class="reject-modal-buttons">
+                <button type="submit" class="btn-submit">送信</button>
+                <button type="button" class="btn-close" onclick="closeMonthRejectModal()">閉じる</button>
+            </div>
+        </form>
 
     </div>
+</div>
 
-    <script>
-        function showTab(tabName) {
+<script>
+    function showTab(tabName, event) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
 
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
 
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+    }
 
-            document.getElementById(tabName).classList.add('active');
+    function openCalendarModal(key) {
+        document.getElementById('calendarModal-' + key).style.display = 'block';
+    }
 
-            event.target.classList.add('active');
-        }
+    function closeCalendarModal(key) {
+        document.getElementById('calendarModal-' + key).style.display = 'none';
+    }
 
-        let rejectId = null;
+    function openMonthRejectModal(userId, year, month) {
+        document.getElementById('monthRejectModal').style.display = 'block';
 
-        function openRejectModal(id) {
-            rejectId = id;
-            document.getElementById('rejectModal').style.display = 'block';
+        document.getElementById('monthRejectUserId').value = userId;
+        document.getElementById('monthRejectYear').value = year;
+        document.getElementById('monthRejectMonth').value = month;
+    }
 
-            const form = document.getElementById('rejectForm');
-            form.action = `/admin/shifts/${id}/reject`;
-        }
-
-        function closeRejectModal() {
-            document.getElementById('rejectModal').style.display = 'none';
-        }
-    </script>
+    function closeMonthRejectModal() {
+        document.getElementById('monthRejectModal').style.display = 'none';
+    }
+</script>
 
 </body>
-
 </html>
