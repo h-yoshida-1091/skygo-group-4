@@ -249,6 +249,7 @@
                         </td>
 
                         <td>
+                        
                             <form action="{{ route('admin.attendance.approve', $req->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <button class="btn approve">承認</button>
