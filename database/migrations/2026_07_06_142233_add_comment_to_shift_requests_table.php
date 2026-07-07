@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::table('shift_requests', function (Blueprint $table) {
             $table->text('comment')->nullable()->after('status');
         });
+
+        Schema::table('attendance_requests', function (Blueprint $table) {
+            $table->text('comment')->nullable()->after('status');
+        });
     }
 
     /**
@@ -22,6 +26,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('shift_requests', function (Blueprint $table) {
+            $table->dropColumn('comment');
+        });
+
+        Schema::table('attendance_requests', function (Blueprint $table) {
             $table->dropColumn('comment');
         });
     }
