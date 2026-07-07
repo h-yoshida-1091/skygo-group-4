@@ -160,12 +160,12 @@
 
                         <td>
 
-                            <form action="{{ route('admin.shift.approve', $req->id) }}" method="POST">
+                            <form action="{{ route('admin.attendance.approve', $req->id) }}" method="POST">
                                 @csrf
                                 <button class="btn approve">承認</button>
                             </form>
 
-                            <form action="{{ route('admin.shift.reject', $req->id) }}" method="POST">
+                            <form action="{{ route('admin.attendance.reject', $req->id) }}" method="POST">
                                 @csrf
                                 <button class="btn reject">差し戻し</button>
                             </form>
