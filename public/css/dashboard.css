@@ -309,3 +309,40 @@ body {
 .modal-submit-btn:hover {
     background: #1565c0;
 }
+
+.character-panel {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 文字を見やすくする白い半透明レイヤー */
+.character-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.45);
+    z-index: 0;
+}
+
+.character-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* トカゲ */
+.lizard-panel {
+    background-image: url("/images/characters/砂漠.png");
+}
+
+/* かめ */
+.turtle-panel {
+    background-image: url("/images/characters/空.png");
+}
+
+/* カエル */
+.frog-panel {
+    background-image: url("/images/characters/海.png");
+}

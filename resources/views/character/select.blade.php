@@ -8,10 +8,10 @@
 </head>
 
 <body>
-
+    <!-- @include('layouts.header') -->
     <h1>相棒を選ぼう！</h1>
 
-    <p>一緒に成長する相棒を選択してください。</p>
+    <p>一緒に社畜になる相棒を選択してください。</p>
 
     <form action="{{ route('character.select') }}" method="POST">
         @csrf
@@ -26,14 +26,14 @@
                     data-voice="{{ asset('audio/characters/きいち出勤.mp3') }}">
                 <img src="{{ asset('images/characters/トカゲ.png') }}" alt="トカゲ">
                 <h3>歩くトカゲ</h3>
-                <p>لا أخشى الأرض الحارّة! إلى السماء الواسعة مع الطيور!</p>
+                <p>مش فارقة معايا حتى الأرض السخنة!!</p>
             </label>
 
             <label class="character-card turtle-card">
                 <input type="radio"
                     name="character_type"
                     value="かめ"
-                    data-voice="{{ asset('audio/characters/cat.mp3') }}">
+                    data-voice="{{ asset('audio/characters/小林大地出勤.mp3') }}">
                 <img src="{{ asset('images/characters/かめ.png') }}" alt="かめ">
                 <h3>空飛ぶ亀</h3>
                 <p>새들과 함께 드넓은 하늘로!</p>
@@ -43,10 +43,10 @@
                 <input type="radio"
                     name="character_type"
                     value="カエル"
-                    data-voice="{{ asset('audio/characters/cat.mp3') }}">
+                    data-voice="{{ asset('audio/characters/小林大地退勤.mp3') }}">
                 <img src="{{ asset('images/characters/カエル.png') }}" alt="カエル">
                 <h3>泳ぐカエル</h3>
-                <p>Mit den Vögeln in den weiten Himmel!</p>
+                <p>Μεγάλη περιπέτεια στη μεγάλη θάλασσα!</p>
             </label>
 
         </div>
