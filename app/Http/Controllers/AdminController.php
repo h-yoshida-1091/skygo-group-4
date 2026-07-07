@@ -6,52 +6,81 @@ use Illuminate\Http\Request;
 use App\Models\ShiftRequest;
 use App\Models\AttendanceRequest;
 use App\Models\Shift;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
         $shiftRequests = ShiftRequest::with('user')
-            ->latest()
+            ->where('status', 'pending')
+            ->orderBy('user_id')
+            ->orderBy('work_date')
             ->get();
+
+        $monthlyShiftRequests = $shiftRequests->groupBy(function ($req) {
+            return $req->user_id . '-' . Carbon::parse($req->work_date)->format('Y-m');
+        });
 
         $attendanceRequests = AttendanceRequest::with('user')
             ->latest()
             ->get();
 
-        return view('admin.dashboard', compact('shiftRequests', 'attendanceRequests'));
+        return view('admin.dashboard', compact(
+            'monthlyShiftRequests',
+            'attendanceRequests'
+        ));
     }
 
-    public function approveShift($id)
+    public function approveShiftMonth(Request $request)
     {
-        $shift = ShiftRequest::findOrFail($id);
+        $shiftRequests = ShiftRequest::where('user_id', $request->user_id)
+            ->whereYear('work_date', $request->year)
+            ->whereMonth('work_date', $request->month)
+            ->where('status', 'pending')
+            ->get();
 
-        // shiftsへ保存（必要なら）
-        Shift::create([
-            'user_id' => $shift->user_id,
-            'work_date' => $shift->work_date,
-            'start_time' => $shift->start_time,
-            'end_time' => $shift->end_time,
-        ]);
+        foreach ($shiftRequests as $shiftRequest) {
+            Shift::updateOrCreate(
+                [
+                    'user_id' => $shiftRequest->user_id,
+                    'work_date' => $shiftRequest->work_date,
+                ],
+                [
+                    'remote' => $shiftRequest->remote,
+                    'start_time' => $shiftRequest->start_time,
+                    'end_time' => $shiftRequest->end_time,
+                ]
+            );
 
-        // request削除
-        $shift->delete();
+            $shiftRequest->status = 'approved';
+            $shiftRequest->save();
+        }
 
-        return back();
+        return redirect()
+            ->route('admin.dashboard')
+            ->with('success', 'シフト申請を承認しました。');
     }
 
-    public function rejectShift(Request $request, $id)
+    public function rejectShiftMonth(Request $request)
     {
-        $shift = ShiftRequest::findOrFail($id);
+        $shiftRequests = ShiftRequest::where('user_id', $request->user_id)
+            ->whereYear('work_date', $request->year)
+            ->whereMonth('work_date', $request->month)
+            ->where('status', 'pending')
+            ->get();
 
-        $shift->status = 'rejected';
-        $shift->comment = $request->comment;
-        $shift->save();
+        foreach ($shiftRequests as $shiftRequest) {
+            $shiftRequest->status = 'rejected';
+            $shiftRequest->comment = $request->comment;
+            $shiftRequest->save();
+        }
 
-        return back();
+        return redirect()
+            ->route('admin.dashboard')
+            ->with('success', 'シフト申請を差し戻しました。');
     }
 
-    /*打刻修正 承認*/
     public function approveAttendance($id)
     {
         $attendance = AttendanceRequest::findOrFail($id);
@@ -60,10 +89,9 @@ class AdminController extends Controller
         $attendance->comment = null;
         $attendance->save();
 
-        return back();
+        return back()->with('success', '打刻修正申請を承認しました。');
     }
 
-    /*打刻修正 差し戻し*/
     public function rejectAttendance(Request $request, $id)
     {
         $attendance = AttendanceRequest::findOrFail($id);
@@ -72,6 +100,6 @@ class AdminController extends Controller
         $attendance->comment = $request->comment;
         $attendance->save();
 
-        return back();
+        return back()->with('success', '打刻修正申請を差し戻しました。');
     }
 }
