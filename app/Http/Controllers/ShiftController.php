@@ -33,16 +33,33 @@ class ShiftController extends Controller
             ->where('status', 'pending')
             ->get();
 
+        $approvedSubmitRequests = ShiftRequest::where('user_id', $userId)
+            ->whereYear('work_date', $year)
+            ->whereMonth('work_date', $month)
+            ->where('request_type', 'submit')
+            ->where('status', 'approved')
+            ->get();
+
+        $approvedChangeRequests = ShiftRequest::where('user_id', $userId)
+            ->whereYear('work_date', $year)
+            ->whereMonth('work_date', $month)
+            ->where('request_type', 'change')
+            ->where('status', 'approved')
+            ->get();
+
         if ($pendingChangeRequests->isNotEmpty()) {
             $shiftStatusText = '変更申請中';
             $pendingRequests = $pendingChangeRequests;
         } elseif ($pendingSubmitRequests->isNotEmpty()) {
             $shiftStatusText = '申請中';
             $pendingRequests = $pendingSubmitRequests;
-        } elseif ($shifts->isNotEmpty()) {
-            $shiftStatusText = '提出済み';
+        } elseif ($approvedSubmitRequests->isNotEmpty()) {
+            $shiftStatusText = '承認済み';
             $pendingRequests = collect();
-        } else {
+        } elseif ($approvedChangeRequests->isNotEmpty()) {
+            $shiftStatusText = '変更承認済み';
+            $pendingRequests = collect();
+        }else {
             $shiftStatusText = '未提出';
             $pendingRequests = collect();
         }
