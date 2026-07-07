@@ -50,13 +50,21 @@ Route::put('/account/update', [UserController::class, 'update'])->name('account.
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
     ->name('admin.dashboard');
 
+Route::get('/admin/shifts/month', [AdminController::class, 'showShiftMonth'])
+    ->name('admin.shifts.month.show');
 
-// シフト承認
-Route::post('/admin/shifts/{id}/approve', [AdminController::class, 'approveShift'])
-    ->name('admin.shifts.approve');
+Route::post('/admin/shifts/month/approve', [AdminController::class, 'approveShiftMonth'])
+    ->name('admin.shifts.month.approve');
 
-Route::post('/admin/shifts/{id}/reject', [AdminController::class, 'rejectShift'])
-    ->name('admin.shifts.reject');
+Route::post('/admin/shifts/month/reject', [AdminController::class, 'rejectShiftMonth'])
+    ->name('admin.shifts.month.reject');
+
+Route::post('/admin/attendance/{id}/approve', [AdminController::class, 'approveAttendance'])
+    ->name('admin.attendance.approve');
+
+Route::post('/admin/attendance/{id}/reject', [AdminController::class, 'rejectAttendance'])
+    ->name('admin.attendance.reject');
+
 
 // 打刻修正承認
 Route::post('/admin/attendance/{id}/approve', [AdminController::class, 'approveAttendance'])
