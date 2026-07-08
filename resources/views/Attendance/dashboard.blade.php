@@ -46,7 +46,7 @@
 <h2>相棒がいないぞ</h2>
 <p>下のボタンから<br>キャラクターを選択してみよう！</p>
 <div style="margin-bottom: 15px;">
-    <img src='images/小林博士1.png' alt="小林博士" width="200">
+    <img src='images/コバヤシ博士1.png' alt="コバヤシ博士" width="200">
 </div>
 <a class="character-link" href="{{ route('character.index') }}" 
    style="display: inline-block; 
