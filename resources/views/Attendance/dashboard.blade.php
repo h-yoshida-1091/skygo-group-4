@@ -43,12 +43,28 @@
                     <div class="exp-fill" style="--exp-width: {{ $expPercent }}%;"></div>
                 </div>
             </div>
-            @else
-            <h2>相棒がいません</h2>
-            <p>メニューの「相棒」から<br>キャラクターを選択してください。</p>
-            <a class="character-link" href="{{ route('character.index') }}">相棒を選ぶ</a>
-            @endif
-        </section>
+
+        @else
+<h2>相棒がいません</h2>
+<p>メニューの「相棒」から<br>キャラクターを選択してください。</p>
+<div style="margin-bottom: 15px;">
+    <img src='images/小林博士1.png' alt="小林博士" width="200">
+</div>
+<a class="character-link" href="{{ route('character.index') }}" 
+   style="display: inline-block; 
+          padding: 12px 32px; 
+          background: linear-gradient(135deg, #1976d2, #1565c0); 
+          color: #ffffff; 
+          font-weight: bold; 
+          font-size: 16px; 
+          text-decoration: none; 
+          border-radius: 50px; 
+          box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+          transition: all 0.2s ease;">
+    <span>相棒を選ぶ</span>
+</a>
+        @endif
+    </section>
 
         <section class="attendance-panel">
 
