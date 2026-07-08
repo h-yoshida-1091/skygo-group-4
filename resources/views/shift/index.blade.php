@@ -35,7 +35,7 @@
 
     <!-- ポップアップ本体（dialogタグ） -->
     <dialog id="patternDialog">
-        <h2 style="background-color: green; color: white;">シフトパターンを選択</h2>
+        <h2>シフトパターンを選択</h2>
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <button type="button" class="shift-pattern-btn" data-type="出社" data-start="09:00" data-end="17:30">出社 09:00〜17:30</button>
             <button type="button" class="shift-pattern-btn" data-type="リモート" data-start="09:00" data-end="17:30">リモート 09:00〜17:30</button>
