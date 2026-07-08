@@ -105,11 +105,18 @@
 
         .app-logo-area {
             display: flex;
-            flex-direction: column;
-            line-height: 1.1;
+            align-items: center;
+            height: 54px; /* 周りのボタンや称号の高さ(54px)に合わせます */
         }
 
-        .app-logo {
+        .app-logo-img {
+            height: 54px; /* ヘッダー内で綺麗に収まる高さ */
+            width: auto;  /* 横幅はアスペクト比を維持 */
+            object-fit: contain;
+            display: block;
+        }
+
+        /* .app-logo {
             font-size: 30px;
             margin: 0;
             font-weight: 900;
@@ -123,7 +130,7 @@
             color: #fff9c4;
             font-weight: bold;
             letter-spacing: 1px;
-        }
+        } */
 
         .app-title-badge {
             justify-self: center;
@@ -385,8 +392,9 @@
         </button>
 
         <div class="app-logo-area">
-            <h2 class="app-logo">勤怠クエスト</h2>
-            <span class="app-logo-sub">WORK ADVENTURE</span>
+            <a href="{{ route('dashboard') }}" style="display: block;">
+                <img src='images/kintai-logo.png' alt="勤怠クエスト" class="app-logo-img">
+            </a>
         </div>
     </div>
 
