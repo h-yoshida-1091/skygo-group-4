@@ -45,8 +45,8 @@
             </div>
 
         @else
-<h2>相棒がいません</h2>
-<p>メニューの「相棒」から<br>キャラクターを選択してください。</p>
+<h2>相棒がいないぞ</h2>
+<p>下のボタンから<br>キャラクターを選択してみよう！</p>
 <div style="margin-bottom: 15px;">
     <img src='images/小林博士1.png' alt="小林博士" width="200">
 </div>
