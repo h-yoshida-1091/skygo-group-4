@@ -84,12 +84,12 @@
             <div class="work-main-area">
 
                 <div class="button-column">
-                    <form action="/attendances/clock-in" method="POST">
+                    <form action="/attendances/clock-in" method="POST" onsubmit="return confirmClockIn();">
                         @csrf
                         <button type="submit" class="work-btn clock-in">出勤</button>
                     </form>
 
-                    <form action="/attendances/clock-out" method="POST">
+                    <form action="/attendances/clock-out" method="POST" onsubmit="return confirmClockOut();">
                         @csrf
                         <button type="submit" class="work-btn clock-out">退勤</button>
                     </form>
@@ -161,47 +161,90 @@
     </div>
 
     <script>
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('currentTime').textContent =
-                now.toLocaleTimeString('ja-JP');
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('currentTime').textContent =
+            now.toLocaleTimeString('ja-JP');
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    function openModal(element) {
+        const id = element.getAttribute('data-id');
+        const dateStr = element.getAttribute('data-date');
+
+        const clockInVal = element.getAttribute('data-clock-in');
+        const clockOutVal = element.getAttribute('data-clock-out');
+
+        const dateParts = dateStr.split('-');
+        const formattedDate = `${dateParts[0]}年${dateParts[1]}月${dateParts[2]}日`;
+
+        document.getElementById('modalDate').innerText = formattedDate;
+        document.querySelector('input[name="requested_clock_in"]').value = clockInVal || '';
+        document.querySelector('input[name="requested_clock_out"]').value = clockOutVal || '';
+        document.getElementById('editForm').action = `/attendances/${id}/request`;
+        document.getElementById('editModal').classList.add('is-open');
+    }
+
+    function closeModal(event) {
+        document.getElementById('editModal').classList.remove('is-open');
+    }
+
+    const scheduledStartTime = "{{ $todayShift ? \Carbon\Carbon::parse($todayShift->start_time)->format('H:i') : '' }}";
+    const scheduledEndTime = "{{ $todayShift ? \Carbon\Carbon::parse($todayShift->end_time)->format('H:i') : '' }}";
+
+    function getNowTimeText() {
+        const now = new Date();
+
+        return String(now.getHours()).padStart(2, '0') + ':' +
+               String(now.getMinutes()).padStart(2, '0');
+    }
+
+    function confirmClockIn() {
+        if (!scheduledStartTime) {
+            return true;
         }
 
-        updateTime();
-        setInterval(updateTime, 1000);
+        const nowTime = getNowTimeText();
 
-        function openModal(element) {
-            const id = element.getAttribute('data-id');
-            const dateStr = element.getAttribute('data-date');
-
-            const clockInVal = element.getAttribute('data-clock-in');
-            const clockOutVal = element.getAttribute('data-clock-out');
-
-            const dateParts = dateStr.split('-');
-            const formattedDate = `${dateParts[0]}年${dateParts[1]}月${dateParts[2]}日`;
-
-            document.getElementById('modalDate').innerText = formattedDate;
-            document.querySelector('input[name="requested_clock_in"]').value = clockInVal || '';
-            document.querySelector('input[name="requested_clock_out"]').value = clockOutVal || '';
-            document.getElementById('editForm').action = `/attendances/${id}/request`;
-            document.getElementById('editModal').classList.add('is-open');
+        if (nowTime > scheduledStartTime) {
+            return confirm(
+                `現在時刻は ${nowTime} です。\n` +
+                `シフト開始時間 ${scheduledStartTime} を過ぎています。\n` +
+                `遅刻になりますが、出勤しますか？`
+            );
         }
 
-        function closeModal(event) {
-            document.getElementById('editModal').classList.remove('is-open');
+        return true;
+    }
+
+    function confirmClockOut() {
+        if (!scheduledEndTime) {
+            return true;
         }
 
-        const sound = "{{ session('sound') }}";
+        const nowTime = getNowTimeText();
 
-        const clockInPath = "{{ asset('sounds/clock-in.mp3') }}";
-        const clockOutPath = "{{ asset('sounds/clock-out.mp3') }}";
-
-        if (sound === "clock-in") {
-            new Audio("{{ asset('audio/characters/小林大地出勤.mp3') }}").play();
-        } else if (sound === "clock-out") {
-            new Audio("{{ asset('audio/characters/小林大地退勤.mp3') }}").play();
+        if (nowTime < scheduledEndTime) {
+            return confirm(
+                `現在時刻は ${nowTime} です。\n` +
+                `シフト終了時間 ${scheduledEndTime} より前です。\n` +
+                `早退になりますが、退勤しますか？`
+            );
         }
-    </script>
+
+        return true;
+    }
+
+    const sound = "{{ session('sound') }}";
+
+    if (sound === "clock-in") {
+        new Audio("{{ asset('audio/characters/小林大地出勤.mp3') }}").play();
+    } else if (sound === "clock-out") {
+        new Audio("{{ asset('audio/characters/小林大地退勤.mp3') }}").play();
+    }
+</script>
 </body>
 
 </html>
