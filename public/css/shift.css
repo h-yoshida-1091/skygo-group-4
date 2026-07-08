@@ -271,3 +271,27 @@ p {
 .status-box strong {
     color: #2563eb;
 }
+
+dialog {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.close-dialog-btn {
+    margin-top: 15px;
+    display: block;
+    width: 100%;
+}
+
+.shift-pattern-btn.selected {
+    background-color: #007bff;
+    color: white;
+}

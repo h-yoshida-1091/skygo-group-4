@@ -33,14 +33,40 @@ class ShiftController extends Controller
             ->where('status', 'pending')
             ->get();
 
+        $approvedSubmitRequests = ShiftRequest::where('user_id', $userId)
+            ->whereYear('work_date', $year)
+            ->whereMonth('work_date', $month)
+            ->where('request_type', 'submit')
+            ->where('status', 'approved')
+            ->get();
+
+        $approvedChangeRequests = ShiftRequest::where('user_id', $userId)
+            ->whereYear('work_date', $year)
+            ->whereMonth('work_date', $month)
+            ->where('request_type', 'change')
+            ->where('status', 'approved')
+            ->get();
+
+        $rejectedRequests = ShiftRequest::where('user_id', $userId)
+            ->whereYear('work_date', $year)
+            ->whereMonth('work_date', $month)
+            ->where('status', 'rejected')
+            ->get();
+
         if ($pendingChangeRequests->isNotEmpty()) {
             $shiftStatusText = '変更申請中';
             $pendingRequests = $pendingChangeRequests;
         } elseif ($pendingSubmitRequests->isNotEmpty()) {
             $shiftStatusText = '申請中';
             $pendingRequests = $pendingSubmitRequests;
-        } elseif ($shifts->isNotEmpty()) {
-            $shiftStatusText = '提出済み';
+        } elseif ($rejectedRequests->isNotEmpty()) {
+            $shiftStatusText = '差し戻し';
+            $pendingRequests = $rejectedRequests;
+        } elseif ($approvedSubmitRequests->isNotEmpty()) {
+            $shiftStatusText = '承認済み';
+            $pendingRequests = collect();
+        } elseif ($approvedChangeRequests->isNotEmpty()) {
+            $shiftStatusText = '変更承認済み';
             $pendingRequests = collect();
         } else {
             $shiftStatusText = '未提出';
@@ -91,7 +117,12 @@ class ShiftController extends Controller
         }
 
         $requestType = $hasConfirmedShift ? 'change' : 'submit';
-
+        
+        ShiftRequest::where('user_id', $userId)
+            ->whereYear('work_date', $year)
+            ->whereMonth('work_date', $month)
+            ->where('status', 'rejected')
+            ->delete();
         // 初回申請中は何度でも修正できるように、古いsubmit pendingを置き換える
         if ($requestType === 'submit') {
             ShiftRequest::where('user_id', $userId)

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>勤怠管理アプリ</title>
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/小林大地首.png') }}">
 </head>
 
 <body>

@@ -7,6 +7,7 @@ use App\Models\ShiftRequest;
 use App\Models\AttendanceRequest;
 use App\Models\Shift;
 use Carbon\Carbon;
+use App\Models\Attendance;
 
 class AdminController extends Controller
 {
@@ -83,11 +84,25 @@ class AdminController extends Controller
 
     public function approveAttendance($id)
     {
-        $attendance = AttendanceRequest::findOrFail($id);
+        // 修正申請を取得
+        $request = AttendanceRequest::findOrFail($id);
 
-        $attendance->status = 'approved';
-        $attendance->comment = null;
+
+        // 対象の勤怠データを取得
+        $attendance = Attendance::findOrFail($request->attendance_id);
+
+
+        // 勤怠テーブルを修正
+        $attendance->clock_in = $request->requested_clock_in;
+        $attendance->clock_out = $request->requested_clock_out;
         $attendance->save();
+
+
+        // 修正申請を承認
+        $request->status = 'approved';
+        $request->comment = null;
+        $request->save();
+
 
         return back()->with('success', '打刻修正申請を承認しました。');
     }
