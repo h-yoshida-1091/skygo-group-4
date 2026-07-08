@@ -1,66 +1,82 @@
 @php
     use App\Models\UserCharacter;
-    use App\Models\ShiftRequest; // 💡 追加：シフト申請モデルをインポート
+    use App\Models\ShiftRequest;
 
     $headerCharacter = null;
     $titleImage = null;
     $rejectedCount = 0;
-    $rejectedShifts = collect();
+    $rejectedShiftMonths = collect();
+
+    $userLevel = 1;
+    $userExp = 0;
+    $nextExp = 100;
+    $titleName = '新人ワーカー';
 
     if (session()->has('userId')) {
         $userId = session('userId');
 
-        // キャラクター情報取得
         $headerCharacter = UserCharacter::where('user_id', $userId)->first();
+
         if ($headerCharacter) {
             $level = $headerCharacter->level;
-            if ($level >= 150) { $titleImage = 'Lv150.png'; }
-            elseif ($level >= 140) { $titleImage = 'Lv140.png'; }
-            elseif ($level >= 130) { $titleImage = 'Lv30.png'; }
-            elseif ($level >= 120) { $titleImage = 'Lv120.png'; }
-            elseif ($level >= 110) { $titleImage = 'Lv110.png'; }
-            elseif ($level >= 100) { $titleImage = 'Lv100.png'; }
-            elseif ($level >= 90) { $titleImage = 'Lv90.png'; }
-            elseif ($level >= 80) { $titleImage = 'Lv80.png'; }
-            elseif ($level >= 70) { $titleImage = 'Lv70.png'; }
-            elseif ($level >= 60) { $titleImage = 'Lv60.png'; }
-            elseif ($level >= 50) { $titleImage = 'Lv50.png'; }
-            elseif ($level >= 40) { $titleImage = 'Lv40.png'; }
-            elseif ($level >= 30) { $titleImage = 'Lv30.png'; }
-            elseif ($level >= 20) { $titleImage = 'Lv20.png'; }
-            elseif ($level >= 10) { $titleImage = 'Lv10.png'; }
-            else { $titleImage = 'Lv1.png'; }
+            $userLevel = $headerCharacter->level ?? 1;
+            $userExp = $headerCharacter->exp ?? 0;
+            $nextExp = 100;
+
+            if ($level >= 150) { $titleImage = 'Lv150.png'; $titleName = '伝説のワーカー'; }
+            elseif ($level >= 140) { $titleImage = 'Lv140.png'; $titleName = '神速ワーカー'; }
+            elseif ($level >= 130) { $titleImage = 'Lv130.png'; $titleName = '超越ワーカー'; }
+            elseif ($level >= 120) { $titleImage = 'Lv120.png'; $titleName = '王者ワーカー'; }
+            elseif ($level >= 110) { $titleImage = 'Lv110.png'; $titleName = '達人ワーカー'; }
+            elseif ($level >= 100) { $titleImage = 'Lv100.png'; $titleName = 'マスターワーカー'; }
+            elseif ($level >= 90) { $titleImage = 'Lv90.png'; $titleName = '精鋭ワーカー'; }
+            elseif ($level >= 80) { $titleImage = 'Lv80.png'; $titleName = '熟練ワーカー'; }
+            elseif ($level >= 70) { $titleImage = 'Lv70.png'; $titleName = '上級ワーカー'; }
+            elseif ($level >= 60) { $titleImage = 'Lv60.png'; $titleName = '頼れるワーカー'; }
+            elseif ($level >= 50) { $titleImage = 'Lv50.png'; $titleName = 'ベテランワーカー'; }
+            elseif ($level >= 40) { $titleImage = 'Lv40.png'; $titleName = '中堅ワーカー'; }
+            elseif ($level >= 30) { $titleImage = 'Lv30.png'; $titleName = '一人前ワーカー'; }
+            elseif ($level >= 20) { $titleImage = 'Lv20.png'; $titleName = '成長ワーカー'; }
+            elseif ($level >= 10) { $titleImage = 'Lv10.png'; $titleName = '見習いワーカー'; }
+            else { $titleImage = 'Lv1.png'; $titleName = '新人ワーカー'; }
         }
 
-        // 💡 既存テーブルから「差し戻し」のデータを直接取得
-        $rejectedShifts = ShiftRequest::where('user_id', $userId)
-                                      ->where('status', 'rejected')
-                                      ->get();
-        $rejectedCount = $rejectedShifts->count();
+        $rejectedShiftMonths = ShiftRequest::where('user_id', $userId)
+            ->where('status', 'rejected')
+            ->orderBy('work_date', 'desc')
+            ->get()
+            ->groupBy(function ($shift) {
+                return $shift->work_date->format('Y-m');
+            });
+
+        $rejectedCount = $rejectedShiftMonths->count();
     }
+
+    $expPercent = $nextExp > 0 ? min(100, ($userExp / $nextExp) * 100) : 0;
 @endphp
 
 <head>
     <style>
         body {
             margin: 0;
-            padding-top: 65px;
+            padding-top: 76px;
         }
 
         .app-header {
-            height: 65px;
-            background: #1976d2;
+            height: 76px;
+            background: linear-gradient(90deg, #0d47a1, #1976d2, #42a5f5);
             color: #fff;
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            padding: 0 28px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+            padding: 0 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .25);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
+            border-bottom: 4px solid #ffd54f;
         }
 
         .app-header-left {
@@ -71,21 +87,42 @@
         }
 
         .app-menu-btn {
-            border: none;
+            border: 2px solid rgba(255, 255, 255, .35);
             background: rgba(255, 255, 255, .18);
             color: #fff;
-            font-size: 28px;
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
+            font-size: 30px;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
             cursor: pointer;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
+        }
+
+        .app-menu-btn:hover {
+            background: rgba(255, 255, 255, .28);
+            transform: translateY(-1px);
+        }
+
+        .app-logo-area {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
         }
 
         .app-logo {
-            font-size: 28px;
+            font-size: 30px;
             margin: 0;
-            font-weight: bold;
+            font-weight: 900;
+            letter-spacing: 2px;
             white-space: nowrap;
+            text-shadow: 2px 2px 0 rgba(0,0,0,.25);
+        }
+
+        .app-logo-sub {
+            font-size: 12px;
+            color: #fff9c4;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .app-title-badge {
@@ -93,16 +130,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 4px 18px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.13);
+            box-shadow: inset 0 0 12px rgba(255,255,255,.15);
         }
 
         .app-title-badge img {
-            height: 52px;
+            height: 54px;
             max-width: 430px;
             object-fit: contain;
             display: block;
         }
 
-        /* 💡 ユーザー名の左側に通知を並べるためにflex化 */
         .app-user {
             justify-self: end;
             font-size: 16px;
@@ -110,53 +150,65 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 15px; /* 通知ボタンとユーザー名の間隔 */
+            gap: 14px;
         }
 
-        /* 🔔 通知ボタンのスタイル設定 */
         .app-notification-container {
             position: relative;
         }
 
         .app-notification-btn {
-            background: none;
-            border: none;
-            font-size: 22px;
+            background: rgba(255,255,255,.18);
+            border: 2px solid rgba(255,255,255,.35);
+            font-size: 20px;
             cursor: pointer;
             color: #fff;
-            padding: 5px;
+            padding: 9px 13px;
+            border-radius: 999px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 6px;
+            font-weight: bold;
+        }
+
+        .app-notification-btn:hover {
+            background: rgba(255,255,255,.28);
+        }
+
+        .app-notification-label {
+            font-size: 13px;
         }
 
         .app-notification-badge {
             position: absolute;
-            top: 0;
-            right: 0;
+            top: -7px;
+            right: -7px;
             background: #e53935;
             color: white;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             border-radius: 50%;
-            padding: 2px 6px;
-            transform: translate(20%, -20%);
+            min-width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
         }
 
-        /* 📄 通知ドロップダウンのスタイル */
         .app-notification-dropdown {
             display: none;
             position: absolute;
-            top: 45px;
+            top: 52px;
             right: 0;
-            width: 280px;
+            width: 300px;
             background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.22);
             color: #333;
             padding: 12px;
             z-index: 2000;
-            white-space: normal; /* 折り返しを有効に */
+            white-space: normal;
         }
 
         .app-notification-dropdown.show {
@@ -165,9 +217,9 @@
 
         .app-notification-dropdown h4 {
             margin: 0 0 8px 0;
-            font-size: 14px;
+            font-size: 15px;
             border-bottom: 1px solid #eee;
-            padding-bottom: 6px;
+            padding-bottom: 8px;
             color: #1976d2;
         }
 
@@ -175,12 +227,12 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            max-height: 200px;
+            max-height: 220px;
             overflow-y: auto;
         }
 
         .app-notification-item {
-            padding: 8px 0;
+            padding: 9px 0;
             border-bottom: 1px solid #f5f5f5;
             font-size: 13px;
         }
@@ -194,11 +246,61 @@
             text-decoration: none;
             font-weight: bold;
             display: block;
-            margin-top: 4px;
+            margin-top: 5px;
         }
 
-        .app-notification-item a:hover {
-            text-decoration: underline;
+        .app-user-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,.18);
+            border: 2px solid rgba(255,255,255,.32);
+            border-radius: 18px;
+            padding: 8px 12px;
+        }
+
+        .app-user-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #fff;
+            color: #1976d2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
+
+        .app-user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .app-user-name {
+            font-size: 15px;
+            line-height: 1;
+        }
+
+        .app-user-level {
+            font-size: 12px;
+            color: #fff9c4;
+            line-height: 1;
+        }
+
+        .app-exp-bar {
+            width: 90px;
+            height: 7px;
+            background: rgba(255,255,255,.35);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .app-exp-fill {
+            height: 100%;
+            width: {{ $expPercent }}%;
+            background: linear-gradient(90deg, #ffd54f, #fff176);
+            border-radius: 999px;
         }
 
         .app-overlay {
@@ -234,11 +336,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 80px;
+            height: 86px;
             font-size: 22px;
             font-weight: bold;
             color: #1976d2;
             border-bottom: 1px solid #eee;
+            background: #e3f2fd;
         }
 
         .app-side-menu a {
@@ -251,6 +354,7 @@
             color: #333;
             border-bottom: 1px solid #f0f0f0;
             font-size: 17px;
+            font-weight: bold;
         }
 
         .app-side-menu a:hover {
@@ -282,7 +386,11 @@
         <button id="menuBtn" class="app-menu-btn" type="button">
             ☰
         </button>
-        <h2 class="app-logo">勤怠</h2>
+
+        <div class="app-logo-area">
+            <h2 class="app-logo">勤怠クエスト</h2>
+            <span class="app-logo-sub">WORK ADVENTURE</span>
+        </div>
     </div>
 
     <div class="app-title-badge">
@@ -293,24 +401,32 @@
 
     <div class="app-user">
         @if(session()->has('userName'))
-            
+
             <div class="app-notification-container">
                 <button id="notiBtn" class="app-notification-btn" type="button">
-                    🔔
+                    🔔 <span class="app-notification-label">通知</span>
+
                     @if($rejectedCount > 0)
                         <span class="app-notification-badge">{{ $rejectedCount }}</span>
                     @endif
                 </button>
-                
+
                 <div id="notiDropdown" class="app-notification-dropdown">
                     <h4>差し戻し通知</h4>
+
                     <ul class="app-notification-list">
-                        @forelse($rejectedShifts as $shift)
+                        @forelse($rejectedShiftMonths as $yearMonth => $shifts)
+                            @php
+                                [$year, $month] = explode('-', $yearMonth);
+                            @endphp
+
                             <li class="app-notification-item">
                                 <span style="color:#e53935; font-weight:bold;">【要修正】</span>
-                                対象日: {{ \Carbon\Carbon::parse($shift->work_date)->format('Y-m-d') }}<br>
-                                シフト申請が差し戻されました。
-                                <a href="{{ route('shift.index') }}">修正画面へ</a>
+                                {{ $year }}年{{ (int)$month }}月のシフト申請が差し戻されました。<br>
+
+                                <a href="{{ route('shift.index', ['year' => $year, 'month' => $month]) }}">
+                                    修正画面へ
+                                </a>
                             </li>
                         @empty
                             <li class="app-notification-item" style="color:#888; text-align:center;">
@@ -321,7 +437,23 @@
                 </div>
             </div>
 
-            <span>{{ session('userName') }} さん</span>
+            <div class="app-user-card">
+                <div class="app-user-icon">⚔️</div>
+
+                <div class="app-user-info">
+                    <div class="app-user-name">
+                        {{ session('userName') }} さん
+                    </div>
+
+                    <div class="app-user-level">
+                        Lv.{{ $userLevel }} / {{ $titleName }}
+                    </div>
+
+                    <div class="app-exp-bar">
+                        <div class="app-exp-fill"></div>
+                    </div>
+                </div>
+            </div>
         @endif
     </div>
 </header>
@@ -330,9 +462,10 @@
 
 <nav id="menu" class="app-side-menu">
     <div class="app-menu-title">メニュー</div>
+
     <a href="{{ route('dashboard') }}">ダッシュボード</a>
     <a href="{{ route('workschedule') }}">勤務表</a>
-    <a href="{{ route('shift.index') }}">シフト一覧、シフト修正</a>
+    <a href="{{ route('shift.index') }}">シフト一覧・シフト修正</a>
 
     <form action="{{ route('logout') }}" method="POST">
         @csrf
@@ -344,17 +477,17 @@
     const menuBtn = document.getElementById("menuBtn");
     const menu = document.getElementById("menu");
     const overlay = document.getElementById("overlay");
-    
-    // 💡 通知用の要素を取得
+
     const notiBtn = document.getElementById("notiBtn");
     const notiDropdown = document.getElementById("notiDropdown");
 
-    // 左サイドメニューの開閉
     menuBtn.addEventListener("click", () => {
         menu.classList.toggle("open");
         overlay.classList.toggle("show");
-        // メニュー開くときは通知を閉じる
-        if(notiDropdown) notiDropdown.classList.remove("show");
+
+        if (notiDropdown) {
+            notiDropdown.classList.remove("show");
+        }
     });
 
     overlay.addEventListener("click", () => {
@@ -362,14 +495,16 @@
         overlay.classList.remove("show");
     });
 
-    // 💡 通知ドロップダウンの開閉
     if (notiBtn) {
         notiBtn.addEventListener("click", (e) => {
-            e.stopPropagation(); // ヘッダー外クリック判定に干渉させない
+            e.stopPropagation();
             notiDropdown.classList.toggle("show");
         });
 
-        // 画面のどこかをクリックしたら通知ドロップダウンを閉じる
+        notiDropdown.addEventListener("click", (e) => {
+            e.stopPropagation();
+        });
+
         document.addEventListener("click", () => {
             notiDropdown.classList.remove("show");
         });

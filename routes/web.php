@@ -20,6 +20,7 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 
+
 /* 勤怠 */
 Route::get('/dashboard', [AttendanceController::class, 'index'])->name('dashboard');
 
