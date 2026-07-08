@@ -106,6 +106,10 @@ class AttendanceController extends Controller
                 $levelUpCount++;
             }
 
+            if ($character->level >= 50) {
+                $character->image = 'ライオン.png';
+            }
+
             if ($character->level >= 150) {
                 $character->title = '伝説の社畜';
             } elseif ($character->level >= 140) {
