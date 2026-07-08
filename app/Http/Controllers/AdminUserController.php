@@ -56,6 +56,7 @@ class AdminUserController extends Controller
 
     public function edit(int $id)
     {
+        
         if (!session()->has('userId')) {
             return redirect('/login');
         }
