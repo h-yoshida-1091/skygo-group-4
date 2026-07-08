@@ -54,7 +54,10 @@ class AttendanceController extends Controller
             'clock_in' => Carbon::now(),
         ]);
 
-        return redirect()->back()->with('success', '出勤しました！');
+        return redirect()
+            ->route('dashboard')
+            ->with('success', '出勤しました。')
+            ->with('sound', 'clock-in');
     }
 
     /**
@@ -151,7 +154,10 @@ class AttendanceController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', $message);
+        return redirect()
+            ->route('dashboard')
+            ->with('success', $message)
+            ->with('sound', 'clock-out');
     }
 
     /**

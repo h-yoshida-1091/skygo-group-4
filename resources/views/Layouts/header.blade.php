@@ -131,9 +131,6 @@
             align-items: center;
             justify-content: center;
             padding: 4px 18px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.13);
-            box-shadow: inset 0 0 12px rgba(255,255,255,.15);
         }
 
         .app-title-badge img {
