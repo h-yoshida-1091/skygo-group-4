@@ -10,15 +10,15 @@
 
 <nav id="menu" class="menu">
 
-    <a href="/admin/dashboard">📋 申請管理</a>
+    <a href="/admin/dashboard">申請管理</a>
 
-    <a href="/admin/users">👤 ユーザー管理</a>
+    <a href="/admin/users">ユーザー管理</a>
 
 
     <form action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="logout-btn">
-            🚪 ログアウト
+            ログアウト
         </button>
     </form>
 
