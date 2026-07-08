@@ -321,6 +321,7 @@ body {
     display: flex;
     gap: 10px;
 }
+
 .calendar-modal {
     display: none;
     position: fixed;
@@ -382,4 +383,69 @@ body {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+}
+
+.attendance-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+
+.attendance-modal-box {
+
+    background: white;
+    width: 450px;
+    margin: 100px auto;
+    padding: 30px;
+    border-radius: 10px;
+
+}
+
+
+.attendance-detail p {
+
+    margin: 15px 0;
+
+}
+
+.attendance-modal {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.5);
+
+    z-index: 1000;
+
+    overflow: auto;
+
+}
+
+
+.attendance-modal-box {
+
+    background: white;
+
+    width: 450px;
+
+    max-height: 80vh;
+
+    overflow-y: auto;
+
+    margin: 50px auto;
+
+    padding: 30px;
+
+    border-radius: 10px;
+
 }
