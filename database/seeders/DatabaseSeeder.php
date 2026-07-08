@@ -34,8 +34,8 @@ class DatabaseSeeder extends Seeder
             AttendanceSeeder::class,
         ]);
 
-        $this->call([
-            ShiftSeeder::class,
-        ]);
+        // $this->call([
+        //     ShiftSeeder::class,
+        // ]);
     }
 }
