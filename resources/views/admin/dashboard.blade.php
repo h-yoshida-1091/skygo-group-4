@@ -80,7 +80,9 @@
                                 <input type="hidden" name="year" value="{{ $year }}">
                                 <input type="hidden" name="month" value="{{ $month }}">
 
-                                <button class="btn approve">
+                                <button
+                                    class="btn approve"
+                                    onclick="event.stopPropagation();">
                                     承認
                                 </button>
                             </form>
@@ -236,7 +238,17 @@
 
                     @forelse($attendanceRequests as $req)
 
-                    <tr>
+                    <tr
+                        onclick="openAttendanceModal(this)"
+                        data-name="{{ $req->user->name ?? '未設定ユーザー' }}"
+                        data-date="{{ \Carbon\Carbon::parse($req->work_date)->format('Y-m-d') }}"
+                        data-before-in="{{ optional($req->attendance)->clock_in }}"
+                        data-before-out="{{ optional($req->attendance)->clock_out }}"
+                        data-after-in="{{ $req->requested_clock_in }}"
+                        data-after-out="{{ $req->requested_clock_out }}"
+                        data-reason="{{ $req->reason }}"
+                        data-id="{{ $req->id }}"
+                        data-status="{{ $req->status }}">
 
                         <td>
                             {{ $req->user->name ?? '未設定ユーザー' }}
@@ -274,9 +286,11 @@
 
                             @if($req->status === 'pending')
 
-                            <form action="{{ route('admin.attendance.approve', $req->id) }}"
+                            <form
+                                action="{{ route('admin.attendance.approve', $req->id) }}"
                                 method="POST"
-                                style="display:inline;">
+                                style="display:inline;"
+                                onclick="event.stopPropagation();">
 
                                 @csrf
 
@@ -286,9 +300,11 @@
 
                             </form>
 
-                            <form action="{{ route('admin.attendance.reject', $req->id) }}"
+                            <form
+                                action="{{ route('admin.attendance.reject', $req->id) }}"
                                 method="POST"
-                                style="display:inline;">
+                                style="display:inline;"
+                                onclick="event.stopPropagation();">
 
                                 @csrf
 
@@ -359,38 +375,112 @@
         </div>
     </div>
 
+    <!-- 打刻修正詳細モーダル -->
+    <div id="attendanceModal" class="attendance-modal" onclick="closeAttendanceModal()">
+
+        <div class="attendance-modal-box" onclick="event.stopPropagation();">
+
+            <h2>打刻修正申請詳細</h2>
+
+            <div class="attendance-detail">
+
+                <p>
+                    申請者：
+                    <span id="attendanceName"></span>
+                </p>
+
+                <p>
+                    日付：
+                    <span id="attendanceDate"></span>
+                </p>
+
+                <hr>
+
+                <h3>修正前</h3>
+
+                <p>
+                    出勤：
+                    <span id="beforeClockIn"></span>
+                </p>
+
+                <p>
+                    退勤：
+                    <span id="beforeClockOut"></span>
+                </p>
+
+
+                <h3>修正後</h3>
+
+                <p>
+                    出勤：
+                    <span id="afterClockIn"></span>
+                </p>
+
+                <p>
+                    退勤：
+                    <span id="afterClockOut"></span>
+                </p>
+
+
+                <p>
+                    修正理由：
+                    <span id="attendanceReason"></span>
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn-close"
+                onclick="closeAttendanceModal()">
+                閉じる
+            </button>
+
+        </div>
+
+    </div>
+
     <script>
+        function openAttendanceModal(row) {
+
+            document.getElementById("attendanceName").textContent = row.dataset.name;
+            document.getElementById("attendanceDate").textContent = row.dataset.date;
+            document.getElementById("beforeClockIn").textContent = row.dataset.beforeIn;
+            document.getElementById("beforeClockOut").textContent = row.dataset.beforeOut;
+            document.getElementById("afterClockIn").textContent = row.dataset.afterIn;
+            document.getElementById("afterClockOut").textContent = row.dataset.afterOut;
+            document.getElementById("attendanceReason").textContent = row.dataset.reason;
+
+            document.getElementById("attendanceModal").style.display = "block";
+
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeAttendanceModal() {
+
+            document.getElementById("attendanceModal").style.display = "none";
+
+            document.body.style.overflow = "";
+
+        }
+
         function showTab(tabName, event) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
+            // タブ内容を全部非表示
+            document.querySelectorAll('.tab-content').forEach(function(tab) {
                 tab.classList.remove('active');
             });
 
-            document.querySelectorAll('.tab-btn').forEach(btn => {
+            // ボタンのactive解除
+            document.querySelectorAll('.tab-btn').forEach(function(btn) {
                 btn.classList.remove('active');
             });
 
+            // 選択したタブを表示
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
 
-        function openCalendarModal(key) {
-            document.getElementById('calendarModal-' + key).style.display = 'block';
-        }
-
-        function closeCalendarModal(key) {
-            document.getElementById('calendarModal-' + key).style.display = 'none';
-        }
-
-        function openMonthRejectModal(userId, year, month) {
-            document.getElementById('monthRejectModal').style.display = 'block';
-
-            document.getElementById('monthRejectUserId').value = userId;
-            document.getElementById('monthRejectYear').value = year;
-            document.getElementById('monthRejectMonth').value = month;
-        }
-
-        function closeMonthRejectModal() {
-            document.getElementById('monthRejectModal').style.display = 'none';
+            // 押したボタンをactive
+            event.currentTarget.classList.add('active');
         }
     </script>
 
