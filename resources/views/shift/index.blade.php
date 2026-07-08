@@ -6,29 +6,6 @@
     <title>シフト申請</title>
     <link rel="stylesheet" href="{{ asset('css/shift.css') }}">
     <link rel="icon" type="image/png" href="{{ asset('images/小林大地首.png') }}">
-    <style>
-        /* ポップアップ（dialog）の簡易スタイル（必要に応じてshift.cssに移動してください） */
-        dialog {
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-        }
-        dialog::backdrop {
-            background: rgba(0, 0, 0, 0.5);
-        }
-        .close-dialog-btn {
-            margin-top: 15px;
-            display: block;
-            width: 100%;
-        }
-        .shift-pattern-btn.selected {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
 </head>
 
 <body>
@@ -50,7 +27,7 @@
 
     <!-- シフトパターンを選択するポップアップを開くトリガーボタン -->
     <div class="select-card">
-        <button type="button" id="openPatternModal" class="edit-button">シフトパターンを選択</button>
+        <button style="background-color: green;" id="openPatternModal" class="edit-button">シフトパターンを選択</button>
         <div id="selectedPatternDisplay" style="margin-top: 10px; font-weight: bold;">
             選択中: 未選択
         </div>
@@ -58,7 +35,7 @@
 
     <!-- ポップアップ本体（dialogタグ） -->
     <dialog id="patternDialog">
-        <h2 style="background-color: green; color: white;">シフトパターンを選択</h2>
+        <h2>シフトパターンを選択</h2>
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <button type="button" class="shift-pattern-btn" data-type="出社" data-start="09:00" data-end="17:30">出社 09:00〜17:30</button>
             <button type="button" class="shift-pattern-btn" data-type="リモート" data-start="09:00" data-end="17:30">リモート 09:00〜17:30</button>

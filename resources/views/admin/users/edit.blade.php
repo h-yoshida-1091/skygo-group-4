@@ -25,7 +25,7 @@
 
             <input type="email" name="email" value="{{ $user->email }}">
 
-            <input type="password" name="password" placeholder="変更する場合のみ入力">
+            <input type="password" name="password" placeholder="パスワード（変更する場合のみ入力）">
 
             <select name="role">
                 <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>
