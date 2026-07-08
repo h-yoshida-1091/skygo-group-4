@@ -13,6 +13,14 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        if (!session()->has('userId')) {
+            return redirect('/login');
+        }
+
+        if (session('userRole') !== 'admin') {
+            return redirect('/dashboard');
+        }
+
         $shiftRequests = ShiftRequest::with('user')
             ->where('status', 'pending')
             ->orderBy('user_id')
