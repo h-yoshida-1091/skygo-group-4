@@ -316,19 +316,15 @@
 
                             @elseif($req->status === 'approved')
 
-
                             <span style="color:green;font-weight:bold;">
                                 承認済み
                             </span>
 
-
                             @elseif($req->status === 'rejected')
-
 
                             <span style="color:red;font-weight:bold;">
                                 差し戻し済み
                             </span>
-
 
                             @endif
 
@@ -354,8 +350,14 @@
 
     </div>
 
-    <div id="monthRejectModal" class="reject-modal" style="display:none;">
-        <div class="reject-modal-box">
+    <div
+        id="monthRejectModal"
+        class="reject-modal"
+        style="display:none;"
+        onclick="closeMonthRejectModal()">
+        <div
+            class="reject-modal-box"
+            onclick="event.stopPropagation();">
 
             <form action="{{ route('admin.shifts.month.reject') }}" method="POST">
                 @csrf
@@ -376,7 +378,7 @@
     </div>
 
     <!-- 打刻修正詳細モーダル -->
-    <div id="attendanceModal" class="attendance-modal" onclick="closeAttendanceModal()">
+    <div id="attendanceModal" class="attendance-modal" style="display:none;" onclick="closeAttendanceModal()">
 
         <div class="attendance-modal-box" onclick="event.stopPropagation();">
 
@@ -481,6 +483,40 @@
 
             // 押したボタンをactive
             event.currentTarget.classList.add('active');
+        }
+
+        function openMonthRejectModal(userId, year, month) {
+
+            document.getElementById("monthRejectUserId").value = userId;
+            document.getElementById("monthRejectYear").value = year;
+            document.getElementById("monthRejectMonth").value = month;
+
+            document.getElementById("monthRejectModal").style.display = "block";
+
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeMonthRejectModal() {
+
+            document.getElementById("monthRejectModal").style.display = "none";
+
+            document.body.style.overflow = "";
+
+        }
+
+        function openCalendarModal(key) {
+
+            document.getElementById("calendarModal-" + key).style.display = "block";
+
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeCalendarModal(key) {
+
+            document.getElementById("calendarModal-" + key).style.display = "none";
+
+            document.body.style.overflow = "";
+
         }
     </script>
 
