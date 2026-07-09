@@ -173,10 +173,10 @@
                                             {{ $req->request_type === 'change' ? '変更申請' : '申請' }}
                                         </div>
 
-                                        <div>
+                                        <!-- <div>
                                             提出日：
                                             {{ \Carbon\Carbon::parse($submittedAt)->format('m/d H:i') }}
-                                        </div>
+                                        </div> -->
                                     </div>
                                     @else
                                     <div class="no-shift">申請なし</div>
