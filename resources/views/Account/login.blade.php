@@ -16,6 +16,12 @@
         <div id="wordBackground" class="word-background"></div>
         
         <div class="login-card">
+            <div class="app-logo-area">
+                <a href="{{ route('dashboard') }}" style="display: block;">
+                    <img src='images/kintai-logo.png' alt="勤怠クエスト" class="app-logo-img">
+                </a>
+            </div>
+
             <h1>ログイン</h1>
 
             @if ($errors->any())

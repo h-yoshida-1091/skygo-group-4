@@ -63,6 +63,7 @@ $expPercent = $nextExp > 0 ? min(100, ($userExp / $nextExp) * 100) : 0;
         }
 
         .app-header {
+
     height: 76px;
 
     background:
