@@ -74,6 +74,20 @@ body {
     z-index: 0;
 }
 
+.app-logo-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.app-logo-img {
+    height: 80px;
+    width: auto;  /* 横幅はアスペクト比を維持 */
+    object-fit: contain;
+    display: block;
+}
+
 /* ログインカード */
 .login-card {
     width: 420px;

@@ -116,22 +116,6 @@
             display: block;
         }
 
-        /* .app-logo {
-            font-size: 30px;
-            margin: 0;
-            font-weight: 900;
-            letter-spacing: 2px;
-            white-space: nowrap;
-            text-shadow: 2px 2px 0 rgba(0,0,0,.25);
-        }
-
-        .app-logo-sub {
-            font-size: 12px;
-            color: #fff9c4;
-            font-weight: bold;
-            letter-spacing: 1px;
-        } */
-
         .app-title-badge {
             justify-self: center;
             display: flex;
