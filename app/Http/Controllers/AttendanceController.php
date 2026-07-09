@@ -193,6 +193,13 @@ class AttendanceController extends Controller
             ? Carbon::parse($workDate . ' ' . $request->input('requested_clock_out'))
             : null;
 
+        // 差し戻し済みの古い申請を削除する
+        AttendanceRequest::where('user_id', $userId)
+            ->where('attendance_id', $attendance->id)
+            ->where('status', 'rejected')
+            ->delete();
+
+        // 新しく承認待ちとして作成する
         AttendanceRequest::create([
             'user_id'             => $userId,
             'attendance_id'       => $attendance->id,
