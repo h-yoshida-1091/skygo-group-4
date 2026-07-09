@@ -42,7 +42,7 @@
                         <th>申請者名</th>
                         <th>対象月</th>
                         <th>提出日</th>
-                        <th>申請件数</th>
+                        <th>申請日数</th>
                         <th>ステータス</th>
                         <th>操作</th>
                     </tr>
@@ -63,7 +63,7 @@
                         <td>{{ $user->name ?? '未設定ユーザー' }}</td>
                         <td>{{ $year }}年{{ $month }}月分</td>
                         <td>{{ \Carbon\Carbon::parse($submittedAt)->format('Y-m-d H:i') }}</td>
-                        <td>{{ $requests->count() }}件</td>
+                        <td>{{ $requests->count() }}日分</td>
                         <td><span class="pending">申請中</span></td>
 
                         <td>
